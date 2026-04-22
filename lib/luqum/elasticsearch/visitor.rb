@@ -240,7 +240,7 @@ module Luqum
 
         def simplify_if_same(children, current_node)
           children.flat_map do |child|
-            child.class == current_node.class ? simplify_if_same(child.children, current_node) : [child]
+            child.instance_of?(current_node.class) ? simplify_if_same(child.children, current_node) : [child]
           end
         end
 
