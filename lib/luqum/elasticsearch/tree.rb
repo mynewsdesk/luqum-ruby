@@ -18,13 +18,16 @@ module Luqum
 
         attr_accessor :boost, :zero_terms_query, :field_options
 
-        def initialize(no_analyze: nil, method: "term", fields: [], _name: nil, field_options: nil)
+        def initialize(no_analyze: nil, method: "term", fields: [], field_options: nil, **options)
+          query_name = options.delete(:_name)
+          raise ArgumentError, "unknown keyword: #{options.keys.first}" unless options.empty?
+
           @method_name = method
           @fields = fields
           @no_analyze = no_analyze || []
           @zero_terms_query = "none"
           @field_options = field_options || {}
-          @_name = _name unless _name.nil?
+          @_name = query_name unless query_name.nil?
           @additional_keys_to_add = if self.class.const_defined?(:DEFAULT_ADDITIONAL_KEYS_TO_ADD, false)
                                       self.class::DEFAULT_ADDITIONAL_KEYS_TO_ADD.dup
                                     else
@@ -205,11 +208,14 @@ module Luqum
       class ENested < AbstractEOperation
         attr_reader :items
 
-        def initialize(nested_path:, nested_fields:, items:, _name: nil, **_kwargs)
+        def initialize(nested_path:, nested_fields:, items:, **options)
+          query_name = options.delete(:_name)
+          raise ArgumentError, "unknown keyword: #{options.keys.first}" unless options.empty?
+
           @nested_path = [nested_path]
           @nested_fields = nested_fields
           @items = exclude_nested_children(items)
-          @_name = _name
+          @_name = query_name
         end
 
         def nested_path
