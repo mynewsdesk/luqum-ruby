@@ -20,11 +20,11 @@ module Luqum
       ElasticSearchItemFactory = Luqum::Elasticsearch::Tree::ElasticSearchItemFactory
 
       class ElasticsearchQueryBuilder < Luqum::Visitor::TreeVisitor
-        SHOULD = "should".freeze
-        MUST = "must".freeze
+        SHOULD = "should"
+        MUST = "must"
 
-        CONTEXT_ANALYZE_MARKER = "analyzed".freeze
-        CONTEXT_FIELD_PREFIX = "field_prefix".freeze
+        CONTEXT_ANALYZE_MARKER = "analyzed"
+        CONTEXT_FIELD_PREFIX = "field_prefix"
 
         E_MUST = EMust
         E_MUST_NOT = EMustNot

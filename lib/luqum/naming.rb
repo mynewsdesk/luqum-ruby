@@ -4,10 +4,10 @@ require "luqum/visitor"
 
 module Luqum
   module Naming
-    NAME_ATTR = "@_luqum_name".freeze
+    NAME_ATTR = "@_luqum_name"
 
     class TreeAutoNamer < Luqum::Visitor::PathTrackingVisitor
-      LETTERS = "abcdefghilklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".freeze
+      LETTERS = "abcdefghilklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
       POS_LETTER = LETTERS.chars.each_with_index.to_h.freeze
 
       def next_name(name)
