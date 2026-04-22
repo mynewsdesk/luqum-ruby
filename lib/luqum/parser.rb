@@ -72,7 +72,7 @@ module Luqum
           t = peek_type
           case t
           when :OR_OP
-            break if OR_PREC < min_prec
+            break if min_prec > OR_PREC
 
             op_tok = consume
             right = parse_expression(OR_PREC + 1)
@@ -82,7 +82,7 @@ module Luqum
             Luqum::HEAD_TAIL.binary_operation(p_arr, op_tail: op_tok.value.tail)
             left = merged
           when :AND_OP
-            break if AND_PREC < min_prec
+            break if min_prec > AND_PREC
 
             op_tok = consume
             right = parse_expression(AND_PREC + 1)
@@ -93,7 +93,7 @@ module Luqum
             left = merged
           else
             if UNARY_START.include?(t)
-              break if IMPLICIT_PREC < min_prec
+              break if min_prec > IMPLICIT_PREC
 
               right = parse_expression(IMPLICIT_PREC + 1)
               merged = Tree.create_operation(Tree::UnknownOperation, left, right, op_tail: "")
