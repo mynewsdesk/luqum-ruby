@@ -36,7 +36,7 @@ module Luqum
           Group.new(UnknownOperation.new(Word.new("baaaaaaaaaar"), Word.new("baaaaaaaaaaaaaz"))),
           Word.new("fooooooooooo"),
         )
-        expect("\n" + prettify.call(tree)).to eq(<<~OUT.chomp)
+        expect("\n#{prettify.call(tree)}").to eq(<<~OUT.chomp)
 
           (
                   baaaaaaaaaar
@@ -52,7 +52,7 @@ module Luqum
           UnknownOperation.new(Word.new("baaaaaaaaaar"), Word.new("baaaaaaaaaaaaaz")),
           Word.new("fooooooooooo"),
         )
-        expect("\n" + prettify.call(tree)).to eq(<<~OUT.chomp)
+        expect("\n#{prettify.call(tree)}").to eq(<<~OUT.chomp)
 
                   baaaaaaaaaar
                   baaaaaaaaaaaaaz
@@ -63,7 +63,7 @@ module Luqum
 
       it "formats small max_len, indent=8" do
         prettify = Luqum::Pretty::Prettifier.new(indent: 8, max_len: 20)
-        expect("\n" + prettify.call(big_tree)).to eq(<<~OUT.chomp)
+        expect("\n#{prettify.call(big_tree)}").to eq(<<~OUT.chomp)
 
           (
                   baaaaaaaaaar
@@ -74,7 +74,7 @@ module Luqum
           fooooooooooo
         OUT
 
-        expect("\n" + prettify.call(fat_tree)).to eq(<<~OUT.chomp)
+        expect("\n#{prettify.call(fat_tree)}").to eq(<<~OUT.chomp)
 
           subject: (
                   fiiiiiiiiiiz
@@ -92,7 +92,7 @@ module Luqum
 
       it "formats small max_len, inline_ops" do
         prettify = Luqum::Pretty::Prettifier.new(indent: 8, max_len: 20, inline_ops: true)
-        expect("\n" + prettify.call(big_tree)).to eq(<<~OUT.chomp)
+        expect("\n#{prettify.call(big_tree)}").to eq(<<~OUT.chomp)
 
           (
                   baaaaaaaaaar OR
@@ -100,7 +100,7 @@ module Luqum
           fooooooooooo
         OUT
 
-        expect("\n" + prettify.call(fat_tree)).to eq(<<~OUT.chomp)
+        expect("\n#{prettify.call(fat_tree)}").to eq(<<~OUT.chomp)
 
           subject: (
                   fiiiiiiiiiiz OR
@@ -113,7 +113,7 @@ module Luqum
 
       it "formats normal max_len, indent=4" do
         prettify = Luqum::Pretty::Prettifier.new(indent: 4, max_len: 50)
-        expect("\n" + prettify.call(big_tree)).to eq(<<~OUT.chomp)
+        expect("\n#{prettify.call(big_tree)}").to eq(<<~OUT.chomp)
 
           (
               baaaaaaaaaar OR baaaaaaaaaaaaaz
@@ -122,7 +122,7 @@ module Luqum
           fooooooooooo
         OUT
 
-        expect("\n" + prettify.call(fat_tree)).to eq(<<~OUT.chomp)
+        expect("\n#{prettify.call(fat_tree)}").to eq(<<~OUT.chomp)
 
           subject: (
               fiiiiiiiiiiz
@@ -138,14 +138,14 @@ module Luqum
 
       it "formats normal max_len, inline_ops" do
         prettify = Luqum::Pretty::Prettifier.new(indent: 4, max_len: 50, inline_ops: true)
-        expect("\n" + prettify.call(big_tree)).to eq(<<~OUT.chomp)
+        expect("\n#{prettify.call(big_tree)}").to eq(<<~OUT.chomp)
 
           (
               baaaaaaaaaar OR baaaaaaaaaaaaaz ) AND
           fooooooooooo
         OUT
 
-        expect("\n" + prettify.call(fat_tree)).to eq(<<~OUT.chomp)
+        expect("\n#{prettify.call(fat_tree)}").to eq(<<~OUT.chomp)
 
           subject: (
               fiiiiiiiiiiz OR

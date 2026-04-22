@@ -61,7 +61,7 @@ module Luqum
           items
         when Luqum::Tree::SearchField
           [
-            element.name + ":",
+            "#{element.name}:",
             STICK_MARKER,
             *get_chains(element.expr, element),
           ]
@@ -93,7 +93,7 @@ module Luqum
 
             sticking = true
           elsif sticking
-            last = last + " " + current
+            last = "#{last} #{current}"
             sticking = false
           else
             result << last unless last.nil?
@@ -116,7 +116,7 @@ module Luqum
         end
         elements = apply_stick(elements)
         prefix = level > 0 && !in_one_liner ? @prefix : ""
-        join_char = one_liner ? " " : ("\n" + prefix)
+        join_char = one_liner ? " " : ("\n#{prefix}")
         prefix + elements.flat_map { |c| c.split("\n") }.join(join_char)
       end
     end

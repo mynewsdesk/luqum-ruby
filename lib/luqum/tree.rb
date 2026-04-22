@@ -166,7 +166,7 @@ module Luqum
       end
 
       def render
-        @name + ":" + @expr.to_s(head_tail: true)
+        "#{@name}:#{@expr.to_s(head_tail: true)}"
       end
 
       def inspect
