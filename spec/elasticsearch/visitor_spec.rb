@@ -786,7 +786,13 @@ RSpec.describe Luqum::Elasticsearch::Visitor::ElasticsearchQueryBuilder do
                         "should" => [
                           { "term" => { "thes" => { "value" => "SI_FM_GC_RC_Relation_client_commerciale_courrier" } } },
                           { "term" => { "thes" => { "value" => "SI_FM_GC_Gestion_Projet_Documents" } } },
-                          { "term" => { "thes" => { "value" => "SI_FM_GC_RC_Mailing_prospection_Enquete_Taxe_apprentissage" } } },
+                          {
+                            "term" => {
+                              "thes" => {
+                                "value" => "SI_FM_GC_RC_Mailing_prospection_Enquete_Taxe_apprentissage",
+                              },
+                            },
+                          },
                           { "term" => { "thes" => { "value" => "SI_FM_GC_RC_Site_web" } } },
                           { "term" => { "thes" => { "value" => "SI_FM_GC_RH" } } },
                           { "term" => { "thes" => { "value" => "SI_FM_GC_RH_Paye" } } },
