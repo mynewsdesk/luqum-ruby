@@ -27,16 +27,16 @@ module Luqum
 
       def _get_method(node)
         @get_method_cache[node.class] ||= begin
-          resolved_method = node.class.ancestors.filter_map do |cls|
+          node.class.ancestors.each do |cls|
             next unless cls.is_a?(Class)
 
             name = cls.name
             next if name.nil?
 
             candidate = "visit_#{Luqum::Visitor.camel_to_lower(name.split('::').last)}"
-            method(candidate) if respond_to?(candidate, true)
-          end.first
-          resolved_method || method(:generic_visit)
+            return method(candidate) if respond_to?(candidate, true)
+          end
+          method(:generic_visit)
         end
       end
 
