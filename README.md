@@ -38,19 +38,13 @@ Use it to:
 Add it to your `Gemfile`:
 
 ```ruby
-gem "luqum"
+gem "luqum", git: "https://github.com/mynewsdesk/luqum-ruby.git"
 ```
 
 Then:
 
 ```sh
 bundle install
-```
-
-Or install it directly:
-
-```sh
-gem install luqum
 ```
 
 Requires Ruby 3.2 or newer.
