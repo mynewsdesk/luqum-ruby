@@ -8,6 +8,10 @@ require "luqum/visitor"
 require "luqum/pretty"
 require "luqum/auto_head_tail"
 require "luqum/thread"
+require "luqum/deprecated_utils"
+require "luqum/utils"
+require "luqum/check"
+require "luqum/naming"
 
 module Luqum
 end
