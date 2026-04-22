@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'English'
+require "English"
 require "luqum/tree"
 require "luqum/exceptions"
 require "luqum/head_tail"
