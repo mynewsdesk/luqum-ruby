@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.description = "A Ruby library to parse, inspect, and transform Lucene query syntax. " \
                      "Ported from the Python luqum library."
   spec.license = "LGPL-3.0-or-later"
-  spec.required_ruby_version = ">= 3.1"
+  spec.required_ruby_version = ">= 3.2"
 
   spec.files = Dir["lib/**/*.rb", "LICENSE*", "README.md"]
   spec.require_paths = ["lib"]
