@@ -143,7 +143,8 @@ module Luqum
       class EPhrase < AbstractEItem
         DEFAULT_ADDITIONAL_KEYS_TO_ADD = ["q"].freeze
 
-        attr_accessor :q, :slop
+        attr_accessor :q
+        attr_reader :slop
 
         def initialize(phrase, *, **)
           super(*, method: "match_phrase", **)
