@@ -34,7 +34,7 @@ module Luqum
             next if name.nil?
 
             candidate = "visit_#{Luqum::Visitor.camel_to_lower(name.split('::').last)}"
-            return method(candidate) if respond_to?(candidate, true)
+            return method(candidate) if respond_to?(candidate, true) # rubocop:disable Lint/NoReturnInBeginEndBlocks
           end
           method(:generic_visit)
         end

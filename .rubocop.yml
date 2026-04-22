@@ -15,5 +15,11 @@ Style/FrozenStringLiteralComment:
 RSpec/SpecFilePathFormat:
   Enabled: false
 
+Naming/MethodParameterName:
+  Enabled: false
+
+Lint/UnderscorePrefixedVariableName:
+  Enabled: false
+
 Rails: { Enabled: false }
 RSpecRails: { Enabled: false }

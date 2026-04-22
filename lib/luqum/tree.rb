@@ -265,7 +265,7 @@ module Luqum
         parts
       end
 
-      def has_wildcard?
+      def has_wildcard? # rubocop:disable Naming/PredicateName
         !iter_wildcards.first.nil?
       end
 
