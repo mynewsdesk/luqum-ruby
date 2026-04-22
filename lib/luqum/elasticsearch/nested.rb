@@ -26,7 +26,7 @@ module Luqum
 
           children = if query.is_a?(Hash)
                        if query.key?("nested")
-                         params = query["nested"].reject { |key, _| %w[query name].include?(key) }
+                         params = query["nested"].except('query', 'name')
                          sub_query_nester = lambda do |req, name|
                            nested = { "nested" => params.merge("query" => req) }
                            nested = query_nester.call(nested, name) unless query_nester.nil?
