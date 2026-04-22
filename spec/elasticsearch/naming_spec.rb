@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe Luqum::Elasticsearch::Visitor do
   def transformer
     @transformer ||= Luqum::Elasticsearch::Visitor::ElasticsearchQueryBuilder.new(

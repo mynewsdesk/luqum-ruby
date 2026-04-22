@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "luqum/thread"
 require "luqum/parser"
 

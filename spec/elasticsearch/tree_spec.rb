@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 RSpec.describe Luqum::Elasticsearch::Tree do
   describe Luqum::Elasticsearch::Tree::EShould do
     it "keeps operation options in the bool query" do

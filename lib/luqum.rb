@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "luqum/version"
 require "luqum/exceptions"
 require "luqum/tree"
