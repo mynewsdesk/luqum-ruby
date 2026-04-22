@@ -12,6 +12,7 @@ require "luqum/deprecated_utils"
 require "luqum/utils"
 require "luqum/check"
 require "luqum/naming"
+require "luqum/elasticsearch"
 
 module Luqum
 end
