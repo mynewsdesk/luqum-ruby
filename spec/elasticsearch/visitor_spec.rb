@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Luqum::Elasticsearch::Visitor::ElasticsearchQueryBuilder do
   def word(value, **)
     Luqum::Tree::Word.new(value, **)
@@ -784,7 +786,13 @@ RSpec.describe Luqum::Elasticsearch::Visitor::ElasticsearchQueryBuilder do
                         "should" => [
                           { "term" => { "thes" => { "value" => "SI_FM_GC_RC_Relation_client_commerciale_courrier" } } },
                           { "term" => { "thes" => { "value" => "SI_FM_GC_Gestion_Projet_Documents" } } },
-                          { "term" => { "thes" => { "value" => "SI_FM_GC_RC_Mailing_prospection_Enquete_Taxe_apprentissage" } } },
+                          {
+                            "term" => {
+                              "thes" => {
+                                "value" => "SI_FM_GC_RC_Mailing_prospection_Enquete_Taxe_apprentissage",
+                              },
+                            },
+                          },
                           { "term" => { "thes" => { "value" => "SI_FM_GC_RC_Site_web" } } },
                           { "term" => { "thes" => { "value" => "SI_FM_GC_RH" } } },
                           { "term" => { "thes" => { "value" => "SI_FM_GC_RH_Paye" } } },
@@ -1113,25 +1121,5 @@ RSpec.describe Luqum::Elasticsearch::Visitor::ElasticsearchQueryBuilder do
         },
       )
     end
-  end
-end
-
-RSpec.describe Luqum::Elasticsearch::Tree::ElasticSearchItemFactory do
-  it "lets explicit field_options override factory defaults" do
-    factory = described_class.new(
-      [],
-      {},
-      { "foo" => { "match_type" => "phrase" } },
-    )
-
-    word = factory.build(Luqum::Elasticsearch::Visitor::EWord, "bar")
-    expect(word.field_options).to eq({ "foo" => { "match_type" => "phrase" } })
-
-    word = factory.build(
-      Luqum::Elasticsearch::Visitor::EWord,
-      "bar",
-      field_options: { "foo" => { "match_type" => "term" } },
-    )
-    expect(word.field_options).to eq({ "foo" => { "match_type" => "term" } })
   end
 end

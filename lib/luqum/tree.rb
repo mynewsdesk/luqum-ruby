@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "bigdecimal"
 
 module Luqum
@@ -139,7 +141,7 @@ module Luqum
 
     # Placeholder item (think None).
     class NoneItem < Item
-      def to_s(head_tail: false)
+      def to_s(*)
         ""
       end
 
@@ -165,7 +167,7 @@ module Luqum
       end
 
       def render
-        @name + ":" + @expr.to_s(head_tail: true)
+        "#{@name}:#{@expr.to_s(head_tail: true)}"
       end
 
       def inspect
@@ -263,7 +265,7 @@ module Luqum
         parts
       end
 
-      def has_wildcard?
+      def has_wildcard? # rubocop:disable Naming/PredicateName
         !iter_wildcards.first.nil?
       end
 
@@ -342,8 +344,8 @@ module Luqum
         degree = 0.5 if degree.nil?
         case degree
         when BigDecimal then degree
-        when Numeric then BigDecimal(degree.to_s)
-        else BigDecimal(degree.to_s)
+        else
+          BigDecimal(degree.to_s)
         end
       end
     end

@@ -1,0 +1,25 @@
+inherit_mode:
+  merge:
+    - Exclude
+
+inherit_gem:
+  rubocop-mynewsdesk:
+    - .rubocop.yml
+
+AllCops:
+  TargetRubyVersion: 3.2
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+
+RSpec/SpecFilePathFormat:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Lint/UnderscorePrefixedVariableName:
+  Enabled: false
+
+Rails: { Enabled: false }
+RSpecRails: { Enabled: false }

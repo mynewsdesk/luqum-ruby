@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "luqum/check"
 require "luqum/naming"
 require "luqum/utils"
@@ -18,11 +20,11 @@ module Luqum
       ElasticSearchItemFactory = Luqum::Elasticsearch::Tree::ElasticSearchItemFactory
 
       class ElasticsearchQueryBuilder < Luqum::Visitor::TreeVisitor
-        SHOULD = "should".freeze
-        MUST = "must".freeze
+        SHOULD = "should"
+        MUST = "must"
 
-        CONTEXT_ANALYZE_MARKER = "analyzed".freeze
-        CONTEXT_FIELD_PREFIX = "field_prefix".freeze
+        CONTEXT_ANALYZE_MARKER = "analyzed"
+        CONTEXT_FIELD_PREFIX = "field_prefix"
 
         E_MUST = EMust
         E_MUST_NOT = EMustNot
@@ -239,7 +241,7 @@ module Luqum
 
         def simplify_if_same(children, current_node)
           children.flat_map do |child|
-            child.class == current_node.class ? simplify_if_same(child.children, current_node) : [child]
+            child.instance_of?(current_node.class) ? simplify_if_same(child.children, current_node) : [child]
           end
         end
 

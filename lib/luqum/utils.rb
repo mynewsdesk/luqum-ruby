@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "luqum/deprecated_utils"
 require "luqum/visitor"
 

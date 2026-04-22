@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Luqum
   module Elasticsearch
     class SchemaAnalyzer
@@ -33,7 +35,8 @@ module Luqum
 
           target = result
           cumulated = []
-          parents.each do |name, _definition|
+          parents.each do |parent|
+            name = parent.first
             cumulated << name
             key = cumulated.join(".")
             if target.key?(key)

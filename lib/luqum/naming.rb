@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 require "luqum/visitor"
 
 module Luqum
   module Naming
-    NAME_ATTR = "@_luqum_name".freeze
+    NAME_ATTR = "@_luqum_name"
 
     class TreeAutoNamer < Luqum::Visitor::PathTrackingVisitor
-      LETTERS = "abcdefghilklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".freeze
+      LETTERS = "abcdefghilklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
       POS_LETTER = LETTERS.chars.each_with_index.to_h.freeze
 
       def next_name(name)
@@ -60,9 +62,7 @@ module Luqum
       def status_from_parent(path, matching, other)
         if matching.include?(path)
           true
-        elsif other.include?(path)
-          false
-        elsif path.empty?
+        elsif other.include?(path) || path.empty?
           false
         else
           status_from_parent(path[0...-1], matching, other)
@@ -169,7 +169,7 @@ module Luqum
         node.instance_variable_get(NAME_ATTR)
       end
 
-      def auto_name(tree, _targets = nil, _all_names = false)
+      def auto_name(tree, _targets = nil, _all_names: false)
         TreeAutoNamer.new.visit(tree)
       end
 

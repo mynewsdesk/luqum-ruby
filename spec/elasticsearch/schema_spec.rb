@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Luqum::Elasticsearch::SchemaAnalyzer do
   let(:mapping) do
     {

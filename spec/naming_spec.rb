@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Luqum::Naming do
   def word(value, **)
     Luqum::Tree::Word.new(value, **)
@@ -87,7 +89,7 @@ RSpec.describe Luqum::Naming do
                   name.end_with?("operation") ? name.delete_suffix("operation") : name
                 end
     if names.key?(node_name)
-      node_name += (1 + names.keys.count { |name| name.start_with?(node_name) }).to_s
+      node_name += (1 + names.keys.count { |candidate_name| candidate_name.start_with?(node_name) }).to_s
     end
     Luqum::Naming.set_name(node, node_name)
     names[node_name] = path

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "luqum/tree"
 
 module Luqum
@@ -138,7 +140,8 @@ module Luqum
       class EPhrase < AbstractEItem
         DEFAULT_ADDITIONAL_KEYS_TO_ADD = ["q"].freeze
 
-        attr_accessor :q, :slop
+        attr_accessor :q
+        attr_reader :slop
 
         def initialize(phrase, *, **)
           super(*, method: "match_phrase", **)
@@ -205,6 +208,7 @@ module Luqum
 
         def initialize(nested_path:, nested_fields:, items:, _name: nil, **_kwargs)
           @nested_path = [nested_path]
+          @nested_fields = nested_fields
           @items = exclude_nested_children(items)
           @_name = _name
         end

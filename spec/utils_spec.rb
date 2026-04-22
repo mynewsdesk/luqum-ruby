@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "luqum/tree"
 
 RSpec.describe Luqum::Utils do

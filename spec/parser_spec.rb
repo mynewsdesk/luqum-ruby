@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "bigdecimal"
 require "luqum"
 require "luqum/parser"
@@ -157,9 +159,9 @@ module Luqum
           )
           expect(parsed).to eq(tree)
           expect(parsed.operands[0].force).to eq(1)
-          expect(parsed.operands[0].implicit_force).to eq(true)
+          expect(parsed.operands[0].implicit_force).to be(true)
           expect(parsed.operands[1].force).to eq(BigDecimal("1"))
-          expect(parsed.operands[1].implicit_force).to eq(false)
+          expect(parsed.operands[1].implicit_force).to be(false)
           expect(parsed.to_s).to eq(query)
         end
 

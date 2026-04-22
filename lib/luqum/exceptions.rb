@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Luqum
   # Raised when a query has a problem in its structure
   class InconsistentQueryError < StandardError; end

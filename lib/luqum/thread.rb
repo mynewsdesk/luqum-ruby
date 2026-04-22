@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "luqum/parser"
 
 module Luqum

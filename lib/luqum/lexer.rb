@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+require "English"
 require "luqum/tree"
 require "luqum/exceptions"
 require "luqum/head_tail"
@@ -99,13 +102,13 @@ module Luqum
       # simple single-char tokens; finally TERM (greedy catch-all).
       case rest
       when /\A#{PHRASE_RE.source}/o
-        [:PHRASE, Tree::Phrase.new($~[0]), $~[0].length]
+        [:PHRASE, Tree::Phrase.new($LAST_MATCH_INFO[0]), $LAST_MATCH_INFO[0].length]
       when /\A#{REGEX_RE.source}/o
-        [:REGEX, Tree::Regex.new($~[0]), $~[0].length]
+        [:REGEX, Tree::Regex.new($LAST_MATCH_INFO[0]), $LAST_MATCH_INFO[0].length]
       when /\A~([0-9.]+)?/
-        [:APPROX, TokenValue.new(::Regexp.last_match(1)), $~[0].length]
+        [:APPROX, TokenValue.new(::Regexp.last_match(1)), $LAST_MATCH_INFO[0].length]
       when /\A\^([0-9.]+)?/
-        [:BOOST, TokenValue.new(::Regexp.last_match(1)), $~[0].length]
+        [:BOOST, TokenValue.new(::Regexp.last_match(1)), $LAST_MATCH_INFO[0].length]
       when /\A\+/
         [:PLUS, TokenValue.new("+"), 1]
       when /\A-/
@@ -117,15 +120,15 @@ module Luqum
       when /\A\)/
         [:RPAREN, TokenValue.new(")"), 1]
       when /\A[\[{]/
-        [:LBRACKET, TokenValue.new($~[0]), 1]
+        [:LBRACKET, TokenValue.new($LAST_MATCH_INFO[0]), 1]
       when /\A[\]}]/
-        [:RBRACKET, TokenValue.new($~[0]), 1]
+        [:RBRACKET, TokenValue.new($LAST_MATCH_INFO[0]), 1]
       when /\A>=?/
-        [:GREATERTHAN, TokenValue.new($~[0]), $~[0].length]
+        [:GREATERTHAN, TokenValue.new($LAST_MATCH_INFO[0]), $LAST_MATCH_INFO[0].length]
       when /\A<=?/
-        [:LESSTHAN, TokenValue.new($~[0]), $~[0].length]
+        [:LESSTHAN, TokenValue.new($LAST_MATCH_INFO[0]), $LAST_MATCH_INFO[0].length]
       when /\A#{TERM_RE.source}/xo
-        matched = $~[0]
+        matched = $LAST_MATCH_INFO[0]
         if (reserved = RESERVED[matched])
           [reserved, TokenValue.new(matched), matched.length]
         else

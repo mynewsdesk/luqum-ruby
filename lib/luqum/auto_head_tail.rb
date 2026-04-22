@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require "luqum/visitor"
 
 module Luqum
   module AutoHeadTail
-    SPACER = " ".freeze
+    SPACER = " "
 
     # Transformer that populates empty `head` / `tail` on tree items so a
     # hand-built tree prints back to a valid Lucene expression.
