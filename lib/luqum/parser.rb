@@ -260,8 +260,7 @@ module Luqum
 
       def parse_phrase_or_term
         case peek_type
-        when :PHRASE then consume.value
-        when :TERM then consume.value
+        when :PHRASE, :TERM then consume.value
         else raise_syntax_error(peek)
         end
       end

@@ -344,8 +344,8 @@ module Luqum
         degree = 0.5 if degree.nil?
         case degree
         when BigDecimal then degree
-        when Numeric then BigDecimal(degree.to_s)
-        else BigDecimal(degree.to_s)
+        else
+          BigDecimal(degree.to_s)
         end
       end
     end

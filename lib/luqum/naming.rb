@@ -62,9 +62,7 @@ module Luqum
       def status_from_parent(path, matching, other)
         if matching.include?(path)
           true
-        elsif other.include?(path)
-          false
-        elsif path.empty?
+        elsif other.include?(path) || path.empty?
           false
         else
           status_from_parent(path[0...-1], matching, other)
