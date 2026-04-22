@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "luqum/tree"
 require "luqum/exceptions"
 require "luqum/head_tail"

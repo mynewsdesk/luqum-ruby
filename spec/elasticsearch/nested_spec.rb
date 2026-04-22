@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.describe Luqum::Elasticsearch::Nested do
   describe ".extract_nested_queries" do
     it "returns nothing when there is no nested query" do

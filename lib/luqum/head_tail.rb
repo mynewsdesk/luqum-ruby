@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Luqum
   # Lightweight wrapper for non-AST token values (operators, delimiters).
   # Carries pos/size/head/tail so the parser can treat every token uniformly.

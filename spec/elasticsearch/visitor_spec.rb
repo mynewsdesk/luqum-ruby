@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.describe Luqum::Elasticsearch::Visitor::ElasticsearchQueryBuilder do
   def word(value, **)
     Luqum::Tree::Word.new(value, **)

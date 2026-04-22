@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Luqum
   module Elasticsearch
     module Nested

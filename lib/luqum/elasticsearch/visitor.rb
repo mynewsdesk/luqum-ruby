@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "luqum/check"
 require "luqum/naming"
 require "luqum/utils"

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 RSpec.describe Luqum::Check do
   def word(value, **)
     Luqum::Tree::Word.new(value, **)

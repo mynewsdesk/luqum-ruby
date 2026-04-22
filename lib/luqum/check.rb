@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "luqum/utils"
 require "luqum/visitor"
 

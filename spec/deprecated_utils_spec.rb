@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require "luqum/tree"
 
 RSpec.describe Luqum::DeprecatedUtils do
