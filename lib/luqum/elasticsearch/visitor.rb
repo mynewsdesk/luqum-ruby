@@ -1,4 +1,3 @@
-require "set"
 require "luqum/check"
 require "luqum/naming"
 require "luqum/utils"
@@ -35,15 +34,15 @@ module Luqum
         E_BOOL_OPERATION = EBoolOperation
 
         def initialize(default_operator: SHOULD, default_field: "text",
-                       not_analyzed_fields: nil, nested_fields: nil, object_fields: nil,
-                       sub_fields: nil, field_options: nil, match_word_as_phrase: false)
+          not_analyzed_fields: nil, nested_fields: nil, object_fields: nil,
+          sub_fields: nil, field_options: nil, match_word_as_phrase: false)
           super(track_parents: true)
           @not_analyzed_fields = not_analyzed_fields || []
           @nested_fields = normalize_nested_fields(nested_fields)
           @nested_prefixes = Set.new(
             Luqum::Utils.flatten_nested_fields_specs(@nested_fields).map do |field|
               field.include?(".") ? field.rpartition(".").first : field
-            end
+            end,
           )
           @object_fields = normalize_object_fields(object_fields)
           @sub_fields = sub_fields
@@ -54,7 +53,7 @@ module Luqum
           @nesting_checker = Luqum::Check::CheckNestedFields.new(
             @nested_fields,
             object_fields: @object_fields,
-            sub_fields: @sub_fields
+            sub_fields: @sub_fields,
           )
           @match_word_as_phrase = match_word_as_phrase
         end
@@ -64,12 +63,12 @@ module Luqum
           visit(tree).first.json
         end
 
-        def visit_and_operation(node, context, &block)
-          must_operation(node, context, &block)
+        def visit_and_operation(node, context, &)
+          must_operation(node, context, &)
         end
 
-        def visit_or_operation(node, context, &block)
-          should_operation(node, context, &block)
+        def visit_or_operation(node, context, &)
+          should_operation(node, context, &)
         end
 
         def visit_search_field(node, context)
@@ -89,7 +88,7 @@ module Luqum
               self.class::E_NESTED,
               nested_path: nested_path,
               items: enode,
-              _name: effective_name(node, context)
+              _name: effective_name(node, context),
             )
           end
           yield enode
@@ -104,23 +103,23 @@ module Luqum
           yield @es_item_factory.build(self.class::E_MUST_NOT, items)
         end
 
-        def visit_prohibit(node, context, &block)
-          visit_not(node, context, &block)
+        def visit_prohibit(node, context, &)
+          visit_not(node, context, &)
         end
 
-        def visit_plus(node, context, &block)
-          must_operation(node, context, &block)
+        def visit_plus(node, context, &)
+          must_operation(node, context, &)
         end
 
-        def visit_bool_operation(node, context, &block)
-          binary_operation(self.class::E_BOOL_OPERATION, node, context, &block)
+        def visit_bool_operation(node, context, &)
+          binary_operation(self.class::E_BOOL_OPERATION, node, context, &)
         end
 
-        def visit_unknown_operation(node, context, &block)
+        def visit_unknown_operation(node, context, &)
           if @default_operator == SHOULD
-            should_operation(node, context, &block)
+            should_operation(node, context, &)
           else
-            must_operation(node, context, &block)
+            must_operation(node, context, &)
           end
         end
 
@@ -146,10 +145,10 @@ module Luqum
           yield ephrase
         end
 
-        def generic_visit(node, context)
+        def generic_visit(node, context, &)
           child_context = context.dup
           propagate_name(node, child_context)
-          super(node, child_context) { |item| yield item }
+          super(node, child_context, &)
         end
 
         def visit_word(node, context)
@@ -163,7 +162,7 @@ module Luqum
             node.value,
             method: method_name,
             fields: fields(context),
-            _name: effective_name(node, context)
+            _name: effective_name(node, context),
           )
         end
 
@@ -173,14 +172,14 @@ module Luqum
               self.class::E_PHRASE,
               node.value,
               fields: fields(context),
-              _name: effective_name(node, context)
+              _name: effective_name(node, context),
             )
           else
             yield @es_item_factory.build(
               self.class::E_WORD,
               node.value[1...-1],
               fields: fields(context),
-              _name: effective_name(node, context)
+              _name: effective_name(node, context),
             )
           end
         end
@@ -193,7 +192,7 @@ module Luqum
             self.class::E_RANGE,
             fields: fields(context),
             _name: effective_name(node, context),
-            **kwargs
+            **kwargs,
           )
         end
 
@@ -280,6 +279,7 @@ module Luqum
             if (should?(parent) && must?(child)) || (must?(parent) && should?(child))
               raise Luqum::OrAndAndOnSameLevelError, get_operator_extract(child)
             end
+
             yield child
           end
         end
@@ -296,12 +296,12 @@ module Luqum
           yield @es_item_factory.build(cls, items)
         end
 
-        def must_operation(node, context, &block)
-          binary_operation(self.class::E_MUST, node, context, &block)
+        def must_operation(node, context, &)
+          binary_operation(self.class::E_MUST, node, context, &)
         end
 
-        def should_operation(node, context, &block)
-          binary_operation(self.class::E_SHOULD, node, context, &block)
+        def should_operation(node, context, &)
+          binary_operation(self.class::E_SHOULD, node, context, &)
         end
 
         def collect_generic(node, context)

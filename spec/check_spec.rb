@@ -1,66 +1,64 @@
-require "set"
-
 RSpec.describe Luqum::Check do
-  def word(value, **kwargs)
-    Luqum::Tree::Word.new(value, **kwargs)
+  def word(value, **)
+    Luqum::Tree::Word.new(value, **)
   end
 
-  def phrase(value, **kwargs)
-    Luqum::Tree::Phrase.new(value, **kwargs)
+  def phrase(value, **)
+    Luqum::Tree::Phrase.new(value, **)
   end
 
-  def proximity(term, degree:, **kwargs)
-    Luqum::Tree::Proximity.new(term, degree: degree, **kwargs)
+  def proximity(term, degree:, **)
+    Luqum::Tree::Proximity.new(term, degree: degree, **)
   end
 
-  def fuzzy(term, degree:, **kwargs)
-    Luqum::Tree::Fuzzy.new(term, degree: degree, **kwargs)
+  def fuzzy(term, degree:, **)
+    Luqum::Tree::Fuzzy.new(term, degree: degree, **)
   end
 
-  def boost(expr, force:, **kwargs)
-    Luqum::Tree::Boost.new(expr, force: force, **kwargs)
+  def boost(expr, force:, **)
+    Luqum::Tree::Boost.new(expr, force: force, **)
   end
 
-  def range(low, high, include_low: true, include_high: true, **kwargs)
+  def range(low, high, include_low: true, include_high: true, **)
     Luqum::Tree::Range.new(
       low,
       high,
       include_low: include_low,
       include_high: include_high,
-      **kwargs
+      **,
     )
   end
 
-  def group(expr, **kwargs)
-    Luqum::Tree::Group.new(expr, **kwargs)
+  def group(expr, **)
+    Luqum::Tree::Group.new(expr, **)
   end
 
-  def field_group(expr, **kwargs)
-    Luqum::Tree::FieldGroup.new(expr, **kwargs)
+  def field_group(expr, **)
+    Luqum::Tree::FieldGroup.new(expr, **)
   end
 
-  def search_field(name, expr, **kwargs)
-    Luqum::Tree::SearchField.new(name, expr, **kwargs)
+  def search_field(name, expr, **)
+    Luqum::Tree::SearchField.new(name, expr, **)
   end
 
-  def and_op(*children, **kwargs)
-    Luqum::Tree::AndOperation.new(*children, **kwargs)
+  def and_op(*children, **)
+    Luqum::Tree::AndOperation.new(*children, **)
   end
 
-  def or_op(*children, **kwargs)
-    Luqum::Tree::OrOperation.new(*children, **kwargs)
+  def or_op(*children, **)
+    Luqum::Tree::OrOperation.new(*children, **)
   end
 
-  def plus(expr, **kwargs)
-    Luqum::Tree::Plus.new(expr, **kwargs)
+  def plus(expr, **)
+    Luqum::Tree::Plus.new(expr, **)
   end
 
-  def not_op(expr, **kwargs)
-    Luqum::Tree::Not.new(expr, **kwargs)
+  def not_op(expr, **)
+    Luqum::Tree::Not.new(expr, **)
   end
 
-  def prohibit(expr, **kwargs)
-    Luqum::Tree::Prohibit.new(expr, **kwargs)
+  def prohibit(expr, **)
+    Luqum::Tree::Prohibit.new(expr, **)
   end
 
   describe Luqum::Check::LuceneCheck do
@@ -71,16 +69,16 @@ RSpec.describe Luqum::Check do
           field_group(
             and_op(
               boost(proximity(phrase('"foo bar"'), degree: 4), force: "4.2"),
-              prohibit(range(word("100"), word("200")))
-            )
-          )
+              prohibit(range(word("100"), word("200"))),
+            ),
+          ),
         ),
         group(
           or_op(
             fuzzy(word("baz"), degree: ".8"),
-            plus(word("fizz"))
-          )
-        )
+            plus(word("fizz")),
+          ),
+        ),
       )
 
       check = described_class.new
@@ -223,16 +221,16 @@ RSpec.describe Luqum::Check do
           "book" => {
             "title" => {},
             "format" => {
-              "type" => {}
-            }
-          }
+              "type" => {},
+            },
+          },
         },
         "collection.keywords" => {
           "key" => {},
           "more_info.linked" => {
-            "key" => {}
-          }
-        }
+            "key" => {},
+          },
+        },
       }
     end
 
@@ -241,14 +239,14 @@ RSpec.describe Luqum::Check do
         "author.birth.city",
         "collection.title",
         "collection.ref",
-        "collection.keywords.more_info.revision"
+        "collection.keywords.more_info.revision",
       ]
     end
 
     let(:sub_fields) do
       [
         "foo.english",
-        "author.book.title.raw"
+        "author.book.title.raw",
       ]
     end
 
@@ -260,7 +258,7 @@ RSpec.describe Luqum::Check do
       described_class.new(
         nested_fields,
         object_fields: object_fields,
-        sub_fields: sub_fields
+        sub_fields: sub_fields,
       )
     end
 
@@ -368,7 +366,7 @@ RSpec.describe Luqum::Check do
 
     it "accepts a complex mix of object and nested fields" do
       tree = Luqum::Parser.parse(
-        'collection:(title:"foo" AND keywords.more_info:(linked.key:"bar" revision:"test"))'
+        'collection:(title:"foo" AND keywords.more_info:(linked.key:"bar" revision:"test"))',
       )
       expect { strict_checker.call(tree) }.not_to raise_error
       expect { checker.call(tree) }.not_to raise_error
@@ -377,7 +375,7 @@ RSpec.describe Luqum::Check do
 
     it "rejects incomplete nested paths inside a complex mix" do
       tree = Luqum::Parser.parse(
-        'collection:(title:"foo" AND keywords.more_info:(linked:"bar" revision:"test"))'
+        'collection:(title:"foo" AND keywords.more_info:(linked:"bar" revision:"test"))',
       )
 
       expect do

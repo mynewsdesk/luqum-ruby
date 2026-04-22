@@ -1,4 +1,3 @@
-require "set"
 require "luqum/visitor"
 
 module Luqum
@@ -17,7 +16,7 @@ module Luqum
         next_letter.nil? ? name + LETTERS[0] : name[0...-1] + next_letter
       end
 
-      def visit_base_operation(node, context, &block)
+      def visit_base_operation(node, context, &)
         name = context[:global][:name]
         node.children.each_with_index do |child, i|
           name = next_name(name)
@@ -25,7 +24,7 @@ module Luqum
           context[:global][:name_to_path][name] = context[:path] + [i]
         end
         context[:global][:name] = name
-        generic_visit(node, context, &block)
+        generic_visit(node, context, &)
       end
 
       def visit(node)
@@ -111,7 +110,7 @@ module Luqum
 
       def generic_visit(node, context)
         new_node = nil
-        super(node, context) { |visited| new_node = visited }
+        super { |visited| new_node = visited }
         yield mark_node(new_node, context[:path], *context[:info])
       end
 
@@ -182,9 +181,7 @@ module Luqum
       def element_from_path(tree, path)
         node = tree
         current_path = path.dup
-        until current_path.empty?
-          node = node.children.fetch(current_path.shift)
-        end
+        node = node.children.fetch(current_path.shift) until current_path.empty?
         node
       end
 

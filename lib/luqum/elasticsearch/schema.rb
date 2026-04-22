@@ -17,17 +17,17 @@ module Luqum
 
       def not_analyzed_fields
         iter_fields(subfields: true).filter_map do |fname, fdef, parents|
-          not_analyzed = (
+          not_analyzed =
             (fdef["type"] == "string" && fdef.fetch("index", "") == "not_analyzed") ||
-            !["text", "string", "nested", "object"].include?(fdef["type"])
-          )
+            !%w[text string nested object].include?(fdef["type"])
+
           dot_name(fname, parents) if not_analyzed
         end
       end
 
       def nested_fields
         result = {}
-        iter_fields.each do |fname, fdef, parents|
+        iter_fields.each do |fname, _fdef, parents|
           parent_def = parents.empty? ? {} : parents[-1][1]
           next unless parent_def["type"] == "nested"
 
@@ -47,7 +47,6 @@ module Luqum
             target = target[key]
           end
           target[fname] = {}
-          fdef
         end
         result
       end
@@ -55,7 +54,7 @@ module Luqum
       def object_fields
         iter_fields.filter_map do |fname, fdef, parents|
           parent_def = parents.empty? ? {} : parents[-1][1]
-          dot_name(fname, parents) if parent_def["type"] == "object" && !["object", "nested"].include?(fdef["type"])
+          dot_name(fname, parents) if parent_def["type"] == "object" && !%w[object nested].include?(fdef["type"])
         end
       end
 
@@ -73,7 +72,7 @@ module Luqum
           "default_field" => default_field,
           "not_analyzed_fields" => not_analyzed_fields,
           "nested_fields" => nested_fields,
-          "object_fields" => object_fields
+          "object_fields" => object_fields,
         }
       end
 
@@ -83,7 +82,7 @@ module Luqum
         (parents.map(&:first) + [fname]).join(".")
       end
 
-      def walk_properties(properties, parents = [], subfields: false, &block)
+      def walk_properties(properties, parents = [], subfields: false, &)
         properties.each do |fname, fdef|
           yield fname, fdef, parents
 
@@ -99,7 +98,7 @@ module Luqum
           inner_properties = fdef.fetch("properties", {})
           next if inner_properties.empty?
 
-          walk_properties(inner_properties, parents + [[fname, fdef]], subfields: subfields, &block)
+          walk_properties(inner_properties, parents + [[fname, fdef]], subfields: subfields, &)
         end
       end
 

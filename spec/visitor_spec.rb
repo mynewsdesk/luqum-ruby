@@ -7,7 +7,7 @@ module Luqum
       describe Luqum::Visitor::TreeVisitor do
         let(:basic_visitor_class) do
           Class.new(Luqum::Visitor::TreeVisitor) do
-            def generic_visit(node, context, &block)
+            def generic_visit(node, context, &)
               yield node
               super
             end
@@ -16,7 +16,7 @@ module Luqum
 
         let(:tracking_parents_visitor_class) do
           Class.new(Luqum::Visitor::TreeVisitor) do
-            def generic_visit(node, context, &block)
+            def generic_visit(node, context, &)
               yield [node, context[:parents]]
               super
             end
@@ -25,14 +25,14 @@ module Luqum
 
         let(:mro_visitor_class) do
           Class.new(Luqum::Visitor::TreeVisitor) do
-            def visit_or_operation(node, context, &block)
+            def visit_or_operation(node, context, &)
               yield "#{node.children[0]} OR #{node.children[1]}"
-              generic_visit(node, context, &block)
+              generic_visit(node, context, &)
             end
 
-            def visit_base_operation(node, context, &block)
+            def visit_base_operation(node, context, &)
               yield "#{node.children[0]} BASE_OP #{node.children[1]}"
-              generic_visit(node, context, &block)
+              generic_visit(node, context, &)
             end
 
             def visit_word(node, _context)
@@ -60,11 +60,11 @@ module Luqum
           visitor = tracking_parents_visitor_class.new(track_parents: true)
           nodes = visitor.visit(tree)
           expect(nodes).to eq([
-            [tree, nil],
-            [Word.new("foo"), [tree]],
-            [Proximity.new(Phrase.new('"bar"'), degree: 2), [tree]],
-            [Phrase.new('"bar"'), [tree, Proximity.new(Phrase.new('"bar"'), degree: 2)]]
-          ])
+                                [tree, nil],
+                                [Word.new("foo"), [tree]],
+                                [Proximity.new(Phrase.new('"bar"'), degree: 2), [tree]],
+                                [Phrase.new('"bar"'), [tree, Proximity.new(Phrase.new('"bar"'), degree: 2)]],
+                              ])
         end
 
         it "omits parents when not tracking" do
@@ -72,10 +72,10 @@ module Luqum
           visitor = tracking_parents_visitor_class.new
           nodes = visitor.visit(tree)
           expect(nodes).to eq([
-            [tree, nil],
-            [Word.new("foo"), nil],
-            [Phrase.new('"bar"'), nil]
-          ])
+                                [tree, nil],
+                                [Word.new("foo"), nil],
+                                [Phrase.new('"bar"'), nil],
+                              ])
         end
 
         it "dispatches by MRO" do
@@ -94,7 +94,7 @@ module Luqum
       describe Luqum::Visitor::TreeTransformer do
         let(:basic_transformer_class) do
           Class.new(Luqum::Visitor::TreeTransformer) do
-            def visit_word(node, context)
+            def visit_word(_node, context)
               yield Word.new(context[:replacement] || "lol")
             end
 
@@ -102,12 +102,12 @@ module Luqum
               # yields nothing = removal
             end
 
-            def visit_base_operation(node, context, &block)
+            def visit_base_operation(node, context)
               results = []
               generic_visit(node, context) { |n| results << n }
               new_node = results[0]
               if new_node.children.empty?
-                return
+                nil
               elsif new_node.children.length == 1
                 yield new_node.children[0]
               else
@@ -184,18 +184,18 @@ module Luqum
           tree = AndOperation.new(
             OrOperation.new(Word.new("spam"), Word.new("ham")),
             AndOperation.new(Word.new("foo"), Phrase.new('"bar"')),
-            AndOperation.new(Phrase.new('"baz"'), Phrase.new('"biz"'))
+            AndOperation.new(Phrase.new('"baz"'), Phrase.new('"biz"')),
           )
           new_tree = basic_transformer_class.new.visit(tree)
           expect(new_tree).to eq(
-            AndOperation.new(OrOperation.new(Word.new("lol"), Word.new("lol")), Word.new("lol"))
+            AndOperation.new(OrOperation.new(Word.new("lol"), Word.new("lol")), Word.new("lol")),
           )
         end
 
         it "preserves repeated sub-expressions via default transformer" do
           tree = AndOperation.new(
             Group.new(OrOperation.new(Word.new("bar"), Word.new("foo"))),
-            Group.new(OrOperation.new(Word.new("bar"), Word.new("foo"), Word.new("spam")))
+            Group.new(OrOperation.new(Word.new("bar"), Word.new("foo"), Word.new("spam"))),
           )
           same_tree = Luqum::Visitor::TreeTransformer.new.visit(Marshal.load(Marshal.dump(tree)))
           expect(same_tree).to eq(tree)
@@ -235,19 +235,19 @@ module Luqum
             Group.new(OrOperation.new(
               Word.new("foo"),
               Word.new("bar"),
-              Boost.new(Fuzzy.new(Word.new("baz")), force: 2)
+              Boost.new(Fuzzy.new(Word.new("baz")), force: 2),
             )),
             Proximity.new(Phrase.new('"spam ham"')),
-            SearchField.new("fizz", Regex.new("/fuzz/"))
+            SearchField.new("fizz", Regex.new("/fuzz/")),
           )
           paths = term_path_visitor_class.new.visit(tree)
           expect(paths.sort_by { |p, _| p }).to eq([
-            [[0, 0, 0], "foo"],
-            [[0, 0, 1], "bar"],
-            [[0, 0, 2, 0, 0], "baz"],
-            [[1, 0], '"spam ham"'],
-            [[2, 0], "/fuzz/"]
-          ])
+                                                     [[0, 0, 0], "foo"],
+                                                     [[0, 0, 1], "bar"],
+                                                     [[0, 0, 2, 0, 0], "baz"],
+                                                     [[1, 0], '"spam ham"'],
+                                                     [[2, 0], "/fuzz/"],
+                                                   ])
         end
       end
 
@@ -281,20 +281,20 @@ module Luqum
             Group.new(OrOperation.new(
               Word.new("foo"),
               Word.new("bar"),
-              Boost.new(Fuzzy.new(Word.new("baz")), force: 2)
+              Boost.new(Fuzzy.new(Word.new("baz")), force: 2),
             )),
             Proximity.new(Phrase.new('"spam ham"')),
-            SearchField.new("fizz", Regex.new("/fuzz/"))
+            SearchField.new("fizz", Regex.new("/fuzz/")),
           )
           transformed = term_path_transformer_class.new.visit(tree)
           expected = AndOperation.new(
             Group.new(OrOperation.new(
               Word.new("foo@0-0-0"),
               Word.new("bar@0-0-1"),
-              Boost.new(Fuzzy.new(Word.new("baz@0-0-2-0-0")), force: 2)
+              Boost.new(Fuzzy.new(Word.new("baz@0-0-2-0-0")), force: 2),
             )),
             Proximity.new(Phrase.new('"spam ham@1-0"')),
-            SearchField.new("fizz", Regex.new("/fuzz@2-0/"))
+            SearchField.new("fizz", Regex.new("/fuzz@2-0/")),
           )
           expect(transformed).to eq(expected)
         end

@@ -6,9 +6,9 @@ module Luqum
   class Lexer
     RESERVED = {
       "AND" => :AND_OP,
-      "OR"  => :OR_OP,
+      "OR" => :OR_OP,
       "NOT" => :NOT,
-      "TO"  => :TO
+      "TO" => :TO,
     }.freeze
 
     # A Lucene term: any char that isn't a delimiter or whitespace, with
@@ -29,10 +29,10 @@ module Luqum
       )*
     }x
 
-    PHRASE_RE  = /"(?:[^\\"]|\\.)*"/
-    REGEX_RE   = %r{/(?:[^\\/]|\\.)*/}
-    APPROX_RE  = /~([0-9.]+)?/
-    BOOST_RE   = /\^([0-9.]+)?/
+    PHRASE_RE = /"(?:[^\\"]|\\.)*"/
+    REGEX_RE = %r{/(?:[^\\/]|\\.)*/}
+    APPROX_RE = /~([0-9.]+)?/
+    BOOST_RE = /\^([0-9.]+)?/
     SEPARATOR_RE = /\s+/
 
     class Token
@@ -103,9 +103,9 @@ module Luqum
       when /\A#{REGEX_RE.source}/o
         [:REGEX, Tree::Regex.new($~[0]), $~[0].length]
       when /\A~([0-9.]+)?/
-        [:APPROX, TokenValue.new($1), $~[0].length]
+        [:APPROX, TokenValue.new(::Regexp.last_match(1)), $~[0].length]
       when /\A\^([0-9.]+)?/
-        [:BOOST, TokenValue.new($1), $~[0].length]
+        [:BOOST, TokenValue.new(::Regexp.last_match(1)), $~[0].length]
       when /\A\+/
         [:PLUS, TokenValue.new("+"), 1]
       when /\A-/

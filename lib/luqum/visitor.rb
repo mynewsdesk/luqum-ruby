@@ -31,9 +31,9 @@ module Luqum
         results
       end
 
-      def visit_iter(node, context, &block)
+      def visit_iter(node, context, &)
         method_name = resolve_method(node)
-        send(method_name, node, context, &block)
+        send(method_name, node, context, &)
       end
 
       def child_context(_node, _child, context, **kwargs)
@@ -44,10 +44,10 @@ module Luqum
         ctx
       end
 
-      def generic_visit(node, context, &block)
+      def generic_visit(node, context, &)
         node.children.each do |child|
           ctx = child_context(node, child, context)
-          visit_iter(child, ctx, &block)
+          visit_iter(child, ctx, &)
         end
       end
 
@@ -68,8 +68,10 @@ module Luqum
       def find_method(node)
         node.class.ancestors.each do |cls|
           next unless cls.is_a?(Class)
+
           name = cls.name
           next if name.nil?
+
           short = name.split("::").last
           candidate = "#{visitor_method_prefix}#{Visitor.camel_to_lower(short)}"
           return candidate.to_sym if respond_to?(candidate, true)
@@ -83,9 +85,9 @@ module Luqum
     class TreeTransformer < TreeVisitor
       attr_reader :track_new_parents
 
-      def initialize(track_new_parents: false, **kwargs)
+      def initialize(track_new_parents: false, **)
         @track_new_parents = track_new_parents
-        super(**kwargs)
+        super(**)
       end
 
       def visit(tree, context = nil)
@@ -94,7 +96,7 @@ module Luqum
         visit_iter(tree, context) { |v| results << v }
         if results.length != 1
           raise ArgumentError,
-                "The visit of the tree should have produced exactly one element (the transformed tree)"
+            "The visit of the tree should have produced exactly one element (the transformed tree)"
         end
         results[0]
       end
@@ -150,10 +152,10 @@ module Luqum
     class PathTrackingVisitor < TreeVisitor
       include PathTrackingMixin
 
-      def generic_visit(node, context, &block)
+      def generic_visit(node, context, &)
         node.children.each_with_index do |child, i|
           ctx = child_context(node, child, context, position: i)
-          visit_iter(child, ctx, &block)
+          visit_iter(child, ctx, &)
         end
       end
     end

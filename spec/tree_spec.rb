@@ -4,7 +4,6 @@ require "luqum/tree"
 module Luqum
   module Tree
     RSpec.describe "Tree" do
-
       describe Term do
         it "detects wildcards" do
           expect(Term.new("ba*").has_wildcard?).to be true
@@ -38,19 +37,19 @@ module Luqum
 
         it "iterates wildcards with positions" do
           expect(Term.new('a?b\*or*and\?').iter_wildcards.to_a).to eq(
-            [[[1, 2], "?"], [[7, 8], "*"]]
+            [[[1, 2], "?"], [[7, 8], "*"]],
           )
           expect(Term.new('\**\**').iter_wildcards.to_a).to eq(
-            [[[2, 3], "*"], [[5, 6], "*"]]
+            [[[2, 3], "*"], [[5, 6], "*"]],
           )
         end
 
         it "splits on wildcards" do
           expect(Term.new('a??b\*or*and\?').split_wildcards).to eq(
-            ["a", "?", "", "?", 'b\*or', "*", 'and\?']
+            ["a", "?", "", "?", 'b\*or', "*", 'and\?'],
           )
           expect(Term.new('\**\**').split_wildcards).to eq(
-            ['\*', "*", '\*', "*", ""]
+            ['\*', "*", '\*', "*", ""],
           )
         end
       end
@@ -126,9 +125,9 @@ module Luqum
       end
 
       describe "setting children" do
-        def self.it_sets_children_for(desc, &block)
+        def self.it_sets_children_for(desc, &)
           it "sets children for #{desc}" do
-            item, children = instance_exec(&block)
+            item, children = instance_exec(&)
             item.children = children
             expect(item.children).to eq(children)
           end
@@ -136,22 +135,22 @@ module Luqum
 
         it "sets children of leaf and composite nodes" do
           [
-            [Word.new("foo"),              []],
-            [Phrase.new('"foo"'),          []],
-            [Regex.new("/foo/"),           []],
+            [Word.new("foo"), []],
+            [Phrase.new('"foo"'), []],
+            [Regex.new("/foo/"), []],
             [SearchField.new("foo", Word.new("bar")), [Word.new("baz")]],
-            [Group.new(Word.new("foo")),   [Word.new("foo")]],
+            [Group.new(Word.new("foo")), [Word.new("foo")]],
             [FieldGroup.new(Word.new("foo")), [Word.new("foo")]],
             [Range.new(Word.new("20"), Word.new("30")), [Word.new("40"), Word.new("50")]],
             [Proximity.new(Word.new("foo")), [Word.new("foo")]],
-            [Fuzzy.new(Word.new("foo")),   [Word.new("foo")]],
+            [Fuzzy.new(Word.new("foo")), [Word.new("foo")]],
             [Boost.new(Word.new("foo"), force: 1), [Word.new("foo")]],
             [UnknownOperation.new(Word.new("foo"), Word.new("bar")), [Word.new("foo"), Word.new("bar")]],
             [AndOperation.new(Word.new("foo"), Word.new("bar")), [Word.new("foo"), Word.new("bar")]],
             [OrOperation.new(Word.new("foo"), Word.new("bar")), [Word.new("foo"), Word.new("bar")]],
-            [Plus.new(Word.new("foo")),    [Word.new("foo")]],
-            [Not.new(Word.new("foo")),     [Word.new("foo")]],
-            [Prohibit.new(Word.new("foo")), [Word.new("foo")]]
+            [Plus.new(Word.new("foo")), [Word.new("foo")]],
+            [Not.new(Word.new("foo")), [Word.new("foo")]],
+            [Prohibit.new(Word.new("foo")), [Word.new("foo")]],
           ].each do |item, children|
             item.children = children
             expect(item.children).to eq(children)
@@ -189,7 +188,7 @@ module Luqum
             [Not.new(Word.new("foo")), []],
             [Not.new(Word.new("foo")), [Word.new("foo"), Word.new("bar")]],
             [Prohibit.new(Word.new("foo")), []],
-            [Prohibit.new(Word.new("foo")), [Word.new("foo"), Word.new("bar")]]
+            [Prohibit.new(Word.new("foo")), [Word.new("foo"), Word.new("bar")]],
           ]
           bad.each do |item, children|
             expect { item.children = children }.to raise_error(ArgumentError)

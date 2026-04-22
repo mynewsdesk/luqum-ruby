@@ -7,8 +7,8 @@ module Luqum
   module Parser
     # Operator precedence (higher = binds tighter).
     IMPLICIT_PREC = 1
-    OR_PREC       = 2
-    AND_PREC      = 3
+    OR_PREC = 2
+    AND_PREC = 3
 
     # Token types that can start a unary expression (for detecting implicit
     # concatenation).
@@ -58,10 +58,10 @@ module Luqum
       def raise_syntax_error(tok)
         if tok.nil?
           raise ParseSyntaxError,
-                "Syntax error in input : unexpected end of expression (maybe due to unmatched parenthesis) at the end!"
+            "Syntax error in input : unexpected end of expression (maybe due to unmatched parenthesis) at the end!"
         else
           raise ParseSyntaxError,
-                "Syntax error in input : unexpected  '#{tok.value}' at position #{tok.pos}!"
+            "Syntax error in input : unexpected  '#{tok.value}' at position #{tok.pos}!"
         end
       end
 
@@ -72,6 +72,7 @@ module Luqum
           case t
           when :OR_OP
             break if OR_PREC < min_prec
+
             op_tok = consume
             right = parse_expression(OR_PREC + 1)
             p_arr = [nil, left, op_tok.value, right]
@@ -81,6 +82,7 @@ module Luqum
             left = merged
           when :AND_OP
             break if AND_PREC < min_prec
+
             op_tok = consume
             right = parse_expression(AND_PREC + 1)
             p_arr = [nil, left, op_tok.value, right]
@@ -91,6 +93,7 @@ module Luqum
           else
             if UNARY_START.include?(t)
               break if IMPLICIT_PREC < min_prec
+
               right = parse_expression(IMPLICIT_PREC + 1)
               merged = Tree.create_operation(Tree::UnknownOperation, left, right, op_tail: "")
               # pos/size: compute span from left to right
@@ -242,6 +245,7 @@ module Luqum
         if peek_type == :PHRASE
           return consume.value
         end
+
         if peek_type == :MINUS
           minus_tok = consume
           inner = parse_phrase_or_term
@@ -255,7 +259,7 @@ module Luqum
       def parse_phrase_or_term
         case peek_type
         when :PHRASE then consume.value
-        when :TERM   then consume.value
+        when :TERM then consume.value
         else raise_syntax_error(peek)
         end
       end

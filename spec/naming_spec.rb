@@ -1,74 +1,72 @@
-require "set"
-
 RSpec.describe Luqum::Naming do
-  def word(value, **kwargs)
-    Luqum::Tree::Word.new(value, **kwargs)
+  def word(value, **)
+    Luqum::Tree::Word.new(value, **)
   end
 
-  def phrase(value, **kwargs)
-    Luqum::Tree::Phrase.new(value, **kwargs)
+  def phrase(value, **)
+    Luqum::Tree::Phrase.new(value, **)
   end
 
-  def regex(value, **kwargs)
-    Luqum::Tree::Regex.new(value, **kwargs)
+  def regex(value, **)
+    Luqum::Tree::Regex.new(value, **)
   end
 
-  def range(low, high, include_low: true, include_high: true, **kwargs)
+  def range(low, high, include_low: true, include_high: true, **)
     Luqum::Tree::Range.new(
       low,
       high,
       include_low: include_low,
       include_high: include_high,
-      **kwargs
+      **,
     )
   end
 
-  def search_field(name, expr, **kwargs)
-    Luqum::Tree::SearchField.new(name, expr, **kwargs)
+  def search_field(name, expr, **)
+    Luqum::Tree::SearchField.new(name, expr, **)
   end
 
-  def group(expr, **kwargs)
-    Luqum::Tree::Group.new(expr, **kwargs)
+  def group(expr, **)
+    Luqum::Tree::Group.new(expr, **)
   end
 
-  def field_group(expr, **kwargs)
-    Luqum::Tree::FieldGroup.new(expr, **kwargs)
+  def field_group(expr, **)
+    Luqum::Tree::FieldGroup.new(expr, **)
   end
 
-  def and_op(*children, **kwargs)
-    Luqum::Tree::AndOperation.new(*children, **kwargs)
+  def and_op(*children, **)
+    Luqum::Tree::AndOperation.new(*children, **)
   end
 
-  def or_op(*children, **kwargs)
-    Luqum::Tree::OrOperation.new(*children, **kwargs)
+  def or_op(*children, **)
+    Luqum::Tree::OrOperation.new(*children, **)
   end
 
-  def unknown_op(*children, **kwargs)
-    Luqum::Tree::UnknownOperation.new(*children, **kwargs)
+  def unknown_op(*children, **)
+    Luqum::Tree::UnknownOperation.new(*children, **)
   end
 
-  def fuzzy(term, degree: nil, **kwargs)
-    Luqum::Tree::Fuzzy.new(term, degree: degree, **kwargs)
+  def fuzzy(term, degree: nil, **)
+    Luqum::Tree::Fuzzy.new(term, degree: degree, **)
   end
 
-  def proximity(term, degree:, **kwargs)
-    Luqum::Tree::Proximity.new(term, degree: degree, **kwargs)
+  def proximity(term, degree:, **)
+    Luqum::Tree::Proximity.new(term, degree: degree, **)
   end
 
-  def plus(expr, **kwargs)
-    Luqum::Tree::Plus.new(expr, **kwargs)
+  def plus(expr, **)
+    Luqum::Tree::Plus.new(expr, **)
   end
 
-  def not_op(expr, **kwargs)
-    Luqum::Tree::Not.new(expr, **kwargs)
+  def not_op(expr, **)
+    Luqum::Tree::Not.new(expr, **)
   end
 
-  def prohibit(expr, **kwargs)
-    Luqum::Tree::Prohibit.new(expr, **kwargs)
+  def prohibit(expr, **)
+    Luqum::Tree::Prohibit.new(expr, **)
   end
 
-  def boost(expr, force:, **kwargs)
-    Luqum::Tree::Boost.new(expr, force: force, **kwargs)
+  def boost(expr, force:, **)
+    Luqum::Tree::Boost.new(expr, force: force, **)
   end
 
   def names_to_path(node, path = [])
@@ -143,15 +141,15 @@ RSpec.describe Luqum::Naming do
           search_field("bar", word("test")),
           and_op(
             proximity(phrase('"test"'), degree: 2),
-            search_field("baz", word("test"))
-          )
+            search_field("baz", word("test")),
+          ),
         ),
         group(
           unknown_op(
             fuzzy(word("test")),
-            phrase('"test"')
-          )
-        )
+            phrase('"test"'),
+          ),
+        ),
       )
 
       names = described_class.auto_name(tree)
@@ -203,20 +201,20 @@ RSpec.describe Luqum::Naming do
         "b" => [1],
         "c" => [0, 0],
         "d" => [0, 1],
-        "e" => [1, 0, 1]
+        "e" => [1, 0, 1],
       }
 
       expect(described_class.matching_from_names([], names)).to eq(
-        [Set.new, Set[[0], [1], [0, 0], [0, 1], [1, 0, 1]]]
+        [Set.new, Set[[0], [1], [0, 0], [0, 1], [1, 0, 1]]],
       )
       expect(described_class.matching_from_names(%w[a b], names)).to eq(
-        [Set[[0], [1]], Set[[0, 0], [0, 1], [1, 0, 1]]]
+        [Set[[0], [1]], Set[[0, 0], [0, 1], [1, 0, 1]]],
       )
       expect(described_class.matching_from_names(%w[a e], names)).to eq(
-        [Set[[0], [1, 0, 1]], Set[[1], [0, 0], [0, 1]]]
+        [Set[[0], [1, 0, 1]], Set[[1], [0, 0], [0, 1]]],
       )
       expect(described_class.matching_from_names(["c"], names)).to eq(
-        [Set[[0, 0]], Set[[0], [1], [0, 1], [1, 0, 1]]]
+        [Set[[0, 0]], Set[[0], [1], [0, 1], [1, 0, 1]]],
       )
 
       expect do
@@ -233,17 +231,17 @@ RSpec.describe Luqum::Naming do
               proximity(phrase('"test"'), degree: 2),
               search_field("baz", word("test")),
               fuzzy(word("test")),
-              phrase('"test"')
-            )
-          )
-        )
+              phrase('"test"'),
+            ),
+          ),
+        ),
       )
       names = {
         "a" => [],
         "b" => [0, 1],
         "c" => [0, 1, 0, 2],
         "d" => [0, 1, 0, 2, 0],
-        "e" => [0, 1, 0, 3]
+        "e" => [0, 1, 0, 3],
       }
 
       expect(described_class.element_from_path(tree, [])).to eq(tree)
@@ -325,10 +323,10 @@ RSpec.describe Luqum::Naming do
 
       [Set.new, Set[[2]], Set[[0], [2]], Set[[0], [1], [2]]].each do |matching|
         expect(propagate_or.call(tree, matching)).to eq(
-          propagate_matching.call(tree_or, matching, Set.new)
+          propagate_matching.call(tree_or, matching, Set.new),
         )
         expect(propagate_and.call(tree, matching)).to eq(
-          propagate_matching.call(tree_and, matching, Set.new)
+          propagate_matching.call(tree_and, matching, Set.new),
         )
       end
     end
@@ -353,13 +351,13 @@ RSpec.describe Luqum::Naming do
               neg_class.new(
                 and_op(
                   neg_class.new(word("a")),
-                  word("b")
-                )
+                  word("b"),
+                ),
               ),
-              word("c")
-            )
+              word("c"),
+            ),
           ),
-          word("d")
+          word("d"),
         )
 
         a = [0, 0, 0, 0, 0, 0]
@@ -407,7 +405,7 @@ RSpec.describe Luqum::Naming do
       [
         range(word("a"), word("b")),
         fuzzy(word("foo")),
-        proximity(phrase('"bar baz"'), degree: 2)
+        proximity(phrase('"bar baz"'), degree: 2),
       ].each do |tree|
         paths_ok, paths_ko = propagate_matching.call(tree, Set.new, Set[[]])
         expect(paths_ok).to eq(Set.new)
@@ -425,11 +423,11 @@ RSpec.describe Luqum::Naming do
           search_field(
             "foo",
             field_group(
-              plus(word("bar"))
-            )
-          )
+              plus(word("bar")),
+            ),
+          ),
         ),
-        force: 2
+        force: 2,
       )
 
       paths_ok, paths_ko = propagate_matching.call(tree, Set.new, Set[[]])
@@ -450,28 +448,28 @@ RSpec.describe Luqum::Naming do
               plus(
                 and_op(
                   word("foo"),
-                  regex("/fizz/")
-                )
-              )
-            )
+                  regex("/fizz/"),
+                ),
+              ),
+            ),
           ),
           boost(
             group(
               and_op(
                 phrase('"ham"'),
                 word("spam"),
-                prohibit(fuzzy(word("fuzz")))
-              )
+                prohibit(fuzzy(word("fuzz"))),
+              ),
             ),
-            force: 2
-          )
+            force: 2,
+          ),
         ),
         not_op(
           or_op(
             word('"bar"'),
-            word('"baz"')
-          )
-        )
+            word('"baz"'),
+          ),
+        ),
       )
       to_path = simple_naming(tree)
 
@@ -481,32 +479,32 @@ RSpec.describe Luqum::Naming do
         Set[
           "and", "or", "searchfield", "fieldgroup", "plus", "and2", "foo", "fizz",
           "boost", "group", "and3", "ham", "spam", "fuzzy", "or2", "bar", "baz"
-        ]
+        ],
       )
 
       paths_ok, paths_ko = propagate_matching.call(
         tree,
-        Set[to_path["foo"], to_path["fizz"], to_path["ham"]]
+        Set[to_path["foo"], to_path["fizz"], to_path["ham"]],
       )
       expect(paths_to_names(tree, paths_ok)).to eq(
         Set[
           "and", "or", "searchfield", "fieldgroup", "plus", "and2", "foo", "fizz", "ham",
           "prohibit", "not"
-        ]
+        ],
       )
       expect(paths_to_names(tree, paths_ko)).to eq(
-        Set["boost", "group", "and3", "spam", "fuzzy", "or2", "bar", "baz"]
+        Set["boost", "group", "and3", "spam", "fuzzy", "or2", "bar", "baz"],
       )
 
       paths_ok, paths_ko = propagate_matching.call(
         tree,
-        Set[to_path["foo"], to_path["fizz"], to_path["ham"], to_path["spam"]]
+        Set[to_path["foo"], to_path["fizz"], to_path["ham"], to_path["spam"]],
       )
       expect(paths_to_names(tree, paths_ok)).to eq(
         Set[
           "and", "or", "searchfield", "fieldgroup", "plus", "and2", "foo", "fizz", "ham",
           "prohibit", "boost", "group", "and3", "spam", "not"
-        ]
+        ],
       )
       expect(paths_to_names(tree, paths_ko)).to eq(Set["fuzzy", "or2", "bar", "baz"])
 
@@ -518,17 +516,17 @@ RSpec.describe Luqum::Naming do
           to_path["ham"],
           to_path["spam"],
           to_path["fuzzy"],
-          to_path["bar"]
-        ]
+          to_path["bar"],
+        ],
       )
       expect(paths_to_names(tree, paths_ok)).to eq(
         Set[
           "or", "searchfield", "fieldgroup", "plus", "and2",
           "foo", "fizz", "ham", "spam", "fuzzy", "or2", "bar"
-        ]
+        ],
       )
       expect(paths_to_names(tree, paths_ko)).to eq(
-        Set["and", "boost", "group", "and3", "prohibit", "not", "baz"]
+        Set["and", "boost", "group", "and3", "prohibit", "not", "baz"],
       )
     end
   end
@@ -565,7 +563,7 @@ RSpec.describe Luqum::Naming do
 
       out = mark_html.call(tree, Set[foo, bar, baz, or_, and_, not_], Set[spam])
       expect(out).to eq(
-        '<span class="ok">(foo OR bar~2 OR baz^2) AND NOT<span class="ko"> spam</span></span>'
+        '<span class="ok">(foo OR bar~2 OR baz^2) AND NOT<span class="ko"> spam</span></span>',
       )
 
       out = mark_html.call(tree, Set[foo, bar, baz, or_, and_, not_], Set[spam], parcimonious: false)
@@ -573,22 +571,22 @@ RSpec.describe Luqum::Naming do
         '<span class="ok">' \
         '(<span class="ok"><span class="ok">foo </span>OR<span class="ok"> bar~2 </span>OR' \
         '<span class="ok"> baz^2</span></span>) ' \
-        'AND' \
+        "AND" \
         '<span class="ok"> NOT<span class="ko"> spam</span></span>' \
-        "</span>"
+        "</span>",
       )
 
       out = mark_html.call(tree, Set[not_], Set[foo, bar, baz, or_, and_, spam])
       expect(out).to eq(
         '<span class="ko">(foo OR bar~2 OR baz^2) AND' \
-        '<span class="ok"> NOT<span class="ko"> spam</span></span></span>'
+        '<span class="ok"> NOT<span class="ko"> spam</span></span></span>',
       )
 
       mark = described_class.new(ok_class: "success", ko_class: "failure", element: "li")
       out = mark.call(tree, Set[not_], Set[foo, bar, baz, or_, and_, spam])
       expect(out).to eq(
         '<li class="failure">(foo OR bar~2 OR baz^2) AND' \
-        '<li class="success"> NOT<li class="failure"> spam</li></li></li>'
+        '<li class="success"> NOT<li class="failure"> spam</li></li></li>',
       )
     end
   end

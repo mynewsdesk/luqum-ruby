@@ -1,4 +1,3 @@
-require "set"
 require "luqum/utils"
 require "luqum/visitor"
 
@@ -7,14 +6,14 @@ module Luqum
     class LuceneCheck
       FIELD_NAME_RE = /^\w+$/
       SPACE_RE = /\s/
-      INVALID_TERM_CHARS_RE = /[+\/-]/
+      INVALID_TERM_CHARS_RE = %r{[+/-]}
 
       SIMPLE_EXPR_FIELDS = [
         Luqum::Tree::Boost,
         Luqum::Tree::Proximity,
         Luqum::Tree::Fuzzy,
         Luqum::Tree::Word,
-        Luqum::Tree::Phrase
+        Luqum::Tree::Phrase,
       ].freeze
       FIELD_EXPR_FIELDS = (SIMPLE_EXPR_FIELDS + [Luqum::Tree::FieldGroup]).freeze
 
@@ -96,10 +95,10 @@ module Luqum
         item.class.ancestors.each do |cls|
           next unless cls.is_a?(Class)
 
-          candidate = "check_#{Luqum::Visitor.camel_to_lower(cls.name.split("::").last)}"
+          candidate = "check_#{Luqum::Visitor.camel_to_lower(cls.name.split('::').last)}"
           return send(candidate, item, parents) if respond_to?(candidate, true)
         end
-        ["Unknown item type #{item.class.name.split("::").last} : #{item}"]
+        ["Unknown item type #{item.class.name.split('::').last} : #{item}"]
       end
 
       def call(tree)
@@ -134,17 +133,19 @@ module Luqum
         raise ArgumentError, "nested_fields must be a Hash" unless nested_fields.is_a?(Hash)
 
         @object_fields = Luqum::Utils.normalize_object_fields_specs(object_fields)
-        @object_prefixes = Set.new((@object_fields || []).map { |field| field.include?(".") ? field.rpartition(".").first : field })
+        @object_prefixes = Set.new((@object_fields || []).map { |field|
+          field.include?(".") ? field.rpartition(".").first : field
+        })
         @nested_fields = Luqum::Utils.flatten_nested_fields_specs(nested_fields)
         @nested_prefixes = Set.new(@nested_fields.map { |field| field.include?(".") ? field.rpartition(".").first : field })
         @sub_fields = Luqum::Utils.normalize_object_fields_specs(sub_fields)
         super(track_parents: true)
       end
 
-      def visit_search_field(node, context, &block)
+      def visit_search_field(node, context, &)
         child_context = context.dup
         child_context[:prefix] = context[:prefix] + node.name.split(".")
-        generic_visit(node, child_context, &block)
+        generic_visit(node, child_context, &)
       end
 
       def visit_phrase(node, context)
@@ -168,10 +169,10 @@ module Luqum
         fullname = prefix.join(".")
         if @nested_prefixes.include?(fullname)
           raise Luqum::NestedSearchFieldError,
-                %("#{node}" can't be directly attributed to "#{fullname}" as it is a nested field)
+            %("#{node}" can't be directly attributed to "#{fullname}" as it is a nested field)
         elsif @object_prefixes.include?(fullname)
           raise Luqum::NestedSearchFieldError,
-                %("#{node}" can't be directly attributed to "#{fullname}" as it is an object field)
+            %("#{node}" can't be directly attributed to "#{fullname}" as it is an object field)
         elsif prefix.length > 1
           unknown_field = !@sub_fields.nil? &&
                           !@object_fields.nil? &&
@@ -180,7 +181,7 @@ module Luqum
                           !@nested_fields.include?(fullname)
           if unknown_field
             raise Luqum::ObjectSearchFieldError,
-                  %("#{node}" attributed to unknown nested or object field "#{fullname}")
+              %("#{node}" attributed to unknown nested or object field "#{fullname}")
           end
         end
       end

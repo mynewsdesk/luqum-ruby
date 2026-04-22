@@ -7,13 +7,13 @@ module Luqum
         @get_method_cache = {}
       end
 
-      def visit(node, parents = nil, &block)
+      def visit(node, parents = nil, &)
         parents ||= []
         return enum_for(:visit, node, parents) unless block_given?
 
-        each_result(_get_method(node).call(node, parents), &block)
+        each_result(_get_method(node).call(node, parents), &)
         node.children.each do |child|
-          visit(child, parents + [node], &block)
+          visit(child, parents + [node], &)
         end
       end
 
@@ -27,18 +27,19 @@ module Luqum
         @get_method_cache[node.class] ||= begin
           node.class.ancestors.each do |cls|
             next unless cls.is_a?(Class)
+
             name = cls.name
             next if name.nil?
 
-            candidate = "visit_#{Luqum::Visitor.camel_to_lower(name.split("::").last)}"
+            candidate = "visit_#{Luqum::Visitor.camel_to_lower(name.split('::').last)}"
             return method(candidate) if respond_to?(candidate, true)
           end
           method(:generic_visit)
         end
       end
 
-      def each_result(result)
-        Array(result).each { |value| yield value }
+      def each_result(result, &)
+        Array(result).each(&)
       end
     end
 

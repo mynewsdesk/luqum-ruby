@@ -62,7 +62,7 @@ module Luqum
           [
             element.name + ":",
             STICK_MARKER,
-            *get_chains(element.expr, element)
+            *get_chains(element.expr, element),
           ]
         else
           [element.to_s]
@@ -89,6 +89,7 @@ module Luqum
         elements.each do |current|
           if current.equal?(STICK_MARKER)
             raise "STICK_MARKER should never be first!" if last.nil?
+
             sticking = true
           elsif sticking
             last = last + " " + current
@@ -113,7 +114,7 @@ module Luqum
           end
         end
         elements = apply_stick(elements)
-        prefix = (level > 0 && !in_one_liner) ? @prefix : ""
+        prefix = level > 0 && !in_one_liner ? @prefix : ""
         join_char = one_liner ? " " : ("\n" + prefix)
         prefix + elements.flat_map { |c| c.split("\n") }.join(join_char)
       end

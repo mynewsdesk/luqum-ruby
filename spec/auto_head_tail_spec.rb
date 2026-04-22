@@ -39,18 +39,18 @@ module Luqum
           OrOperation.new(
             SearchField.new(
               "foo",
-              FieldGroup.new(UnknownOperation.new(Word.new("bar"), Range.new(Word.new("baz"), Word.new("spam"))))
+              FieldGroup.new(UnknownOperation.new(Word.new("bar"), Range.new(Word.new("baz"), Word.new("spam")))),
             ),
             Not.new(Proximity.new(Phrase.new('"ham ham"'), degree: 2)),
-            Plus.new(Fuzzy.new(Word.new("hammer"), degree: 3))
-          )
+            Plus.new(Fuzzy.new(Word.new("hammer"), degree: 3)),
+          ),
         )
         expect(tree.to_s).to eq('(foo:(bar[bazTOspam])ORNOT"ham ham"~2OR+hammer~3)')
         expect(Luqum::AutoHeadTail.auto_head_tail(tree).to_s).to eq(
-          '(foo:(bar [baz TO spam]) OR NOT "ham ham"~2 OR +hammer~3)'
+          '(foo:(bar [baz TO spam]) OR NOT "ham ham"~2 OR +hammer~3)',
         )
         expect(Luqum::AutoHeadTail.auto_head_tail(Luqum::AutoHeadTail.auto_head_tail(tree)).to_s).to eq(
-          '(foo:(bar [baz TO spam]) OR NOT "ham ham"~2 OR +hammer~3)'
+          '(foo:(bar [baz TO spam]) OR NOT "ham ham"~2 OR +hammer~3)',
         )
       end
 
@@ -58,11 +58,11 @@ module Luqum
         tree = AndOperation.new(
           Range.new(Word.new("foo", tail: "\t"), Word.new("bar", head: "\n"), tail: "\r"),
           Not.new(Word.new("baz", head: "\t\t"), head: "\n\n", tail: "\r\r"),
-          Word.new("spam", head: "\t\n")
+          Word.new("spam", head: "\t\n"),
         )
         expect(tree.to_s).to eq("[foo\tTO\nbar]\rAND\n\nNOT\t\tbaz\r\rAND\t\nspam")
         expect(Luqum::AutoHeadTail.auto_head_tail(tree).to_s).to eq(
-          "[foo\tTO\nbar]\rAND\n\nNOT\t\tbaz\r\rAND\t\nspam"
+          "[foo\tTO\nbar]\rAND\n\nNOT\t\tbaz\r\rAND\t\nspam",
         )
       end
     end

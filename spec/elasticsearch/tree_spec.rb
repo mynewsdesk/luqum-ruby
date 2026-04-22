@@ -5,9 +5,9 @@ RSpec.describe Luqum::Elasticsearch::Tree do
         [
           Luqum::Elasticsearch::Tree::EWord.new("a"),
           Luqum::Elasticsearch::Tree::EWord.new("b"),
-          Luqum::Elasticsearch::Tree::EWord.new("c")
+          Luqum::Elasticsearch::Tree::EWord.new("c"),
         ],
-        minimum_should_match: 2
+        minimum_should_match: 2,
       )
 
       expect(op.json).to eq(
@@ -16,11 +16,11 @@ RSpec.describe Luqum::Elasticsearch::Tree do
             "should" => [
               { "term" => { "" => { "value" => "a" } } },
               { "term" => { "" => { "value" => "b" } } },
-              { "term" => { "" => { "value" => "c" } } }
+              { "term" => { "" => { "value" => "c" } } },
             ],
-            "minimum_should_match" => 2
-          }
-        }
+            "minimum_should_match" => 2,
+          },
+        },
       )
     end
   end

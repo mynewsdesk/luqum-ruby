@@ -1,24 +1,24 @@
 require "luqum/tree"
 
 RSpec.describe Luqum::DeprecatedUtils do
-  def word(value, **kwargs)
-    Luqum::Tree::Word.new(value, **kwargs)
+  def word(value, **)
+    Luqum::Tree::Word.new(value, **)
   end
 
-  def phrase(value, **kwargs)
-    Luqum::Tree::Phrase.new(value, **kwargs)
+  def phrase(value, **)
+    Luqum::Tree::Phrase.new(value, **)
   end
 
-  def and_op(*children, **kwargs)
-    Luqum::Tree::AndOperation.new(*children, **kwargs)
+  def and_op(*children, **)
+    Luqum::Tree::AndOperation.new(*children, **)
   end
 
-  def or_op(*children, **kwargs)
-    Luqum::Tree::OrOperation.new(*children, **kwargs)
+  def or_op(*children, **)
+    Luqum::Tree::OrOperation.new(*children, **)
   end
 
-  def group(expr, **kwargs)
-    Luqum::Tree::Group.new(expr, **kwargs)
+  def group(expr, **)
+    Luqum::Tree::Group.new(expr, **)
   end
 
   describe Luqum::DeprecatedUtils::LuceneTreeVisitor do
@@ -107,14 +107,14 @@ RSpec.describe Luqum::DeprecatedUtils do
     it "removes nodes when visit returns nil" do
       tree = and_op(
         and_op(word("foo"), phrase('"bar"')),
-        and_op(phrase('"baz"'), phrase('"biz"'))
+        and_op(phrase('"baz"'), phrase('"biz"')),
       )
       new_tree = basic_transformer_class.new.visit(tree)
       expect(new_tree).to eq(
         and_op(
           and_op(word("lol")),
-          and_op
-        )
+          and_op,
+        ),
       )
     end
 
@@ -122,14 +122,14 @@ RSpec.describe Luqum::DeprecatedUtils do
       op_class = or_list_operation_class
       tree = op_class.new(
         op_class.new(word("foo"), phrase('"bar"')),
-        op_class.new(phrase('"baz"'))
+        op_class.new(phrase('"baz"')),
       )
       new_tree = basic_transformer_class.new.visit(tree)
       expect(new_tree).to eq(
         op_class.new(
           op_class.new(word("lol")),
-          op_class.new
-        )
+          op_class.new,
+        ),
       )
     end
 
@@ -145,7 +145,7 @@ RSpec.describe Luqum::DeprecatedUtils do
     it "preserves repeated sub-expressions with the default transformer" do
       tree = and_op(
         group(or_op(word("bar"), word("foo"))),
-        group(or_op(word("bar"), word("foo"), word("spam")))
+        group(or_op(word("bar"), word("foo"), word("spam"))),
       )
       same_tree = described_class.new.visit(Marshal.load(Marshal.dump(tree)))
       expect(same_tree).to eq(tree)

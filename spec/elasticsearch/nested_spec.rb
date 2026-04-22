@@ -2,7 +2,7 @@ RSpec.describe Luqum::Elasticsearch::Nested do
   describe ".extract_nested_queries" do
     it "returns nothing when there is no nested query" do
       queries = described_class.extract_nested_queries(
-        { "term" => { "text" => { "value" => "spam", "_name" => "spam" } } }
+        { "term" => { "text" => { "value" => "spam", "_name" => "spam" } } },
       )
       expect(queries).to eq([])
 
@@ -11,10 +11,10 @@ RSpec.describe Luqum::Elasticsearch::Nested do
           "bool" => {
             "must" => [
               { "term" => { "text" => { "value" => "spam", "_name" => "spam" } } },
-              { "term" => { "text" => { "value" => "ham", "_name" => "ham" } } }
-            ]
-          }
-        }
+              { "term" => { "text" => { "value" => "ham", "_name" => "ham" } } },
+            ],
+          },
+        },
       )
       expect(queries).to eq([])
     end
@@ -24,9 +24,9 @@ RSpec.describe Luqum::Elasticsearch::Nested do
         {
           "nested" => {
             "path" => "my",
-            "query" => { "term" => { "text" => { "value" => "spam", "_name" => "spam" } } }
-          }
-        }
+            "query" => { "term" => { "text" => { "value" => "spam", "_name" => "spam" } } },
+          },
+        },
       )
       expect(queries).to eq([])
     end
@@ -37,14 +37,14 @@ RSpec.describe Luqum::Elasticsearch::Nested do
       bool_query = { "bool" => { "must" => [term1, term2] } }
 
       queries = described_class.extract_nested_queries(
-        { "nested" => { "path" => "my", "query" => bool_query } }
+        { "nested" => { "path" => "my", "query" => bool_query } },
       )
 
       expect(queries).to eq(
         [
           { "nested" => { "path" => "my", "query" => term1, "_name" => "spam" } },
-          { "nested" => { "path" => "my", "query" => term2, "_name" => "ham" } }
-        ]
+          { "nested" => { "path" => "my", "query" => term2, "_name" => "ham" } },
+        ],
       )
     end
 
@@ -59,17 +59,17 @@ RSpec.describe Luqum::Elasticsearch::Nested do
           "bool" => {
             "should" => [
               term3,
-              { "nested" => { "path" => "my", "query" => bool_query } }
-            ]
-          }
-        }
+              { "nested" => { "path" => "my", "query" => bool_query } },
+            ],
+          },
+        },
       )
 
       expect(queries).to eq(
         [
           { "nested" => { "path" => "my", "query" => term1, "_name" => "spam" } },
-          { "nested" => { "path" => "my", "query" => term2, "_name" => "ham" } }
-        ]
+          { "nested" => { "path" => "my", "query" => term2, "_name" => "ham" } },
+        ],
       )
     end
 
@@ -81,7 +81,7 @@ RSpec.describe Luqum::Elasticsearch::Nested do
       bool_query2 = { "bool" => { "must" => [term3, bool_query1] } }
 
       queries = described_class.extract_nested_queries(
-        { "nested" => { "path" => "my", "query" => bool_query2 } }
+        { "nested" => { "path" => "my", "query" => bool_query2 } },
       )
 
       expect(queries).to eq(
@@ -89,8 +89,8 @@ RSpec.describe Luqum::Elasticsearch::Nested do
           { "nested" => { "path" => "my", "query" => term3, "_name" => "spam" } },
           { "nested" => { "path" => "my", "query" => bool_query1 } },
           { "nested" => { "path" => "my", "query" => term1, "_name" => "bar" } },
-          { "nested" => { "path" => "my", "query" => term2, "_name" => "baz" } }
-        ]
+          { "nested" => { "path" => "my", "query" => term2, "_name" => "baz" } },
+        ],
       )
     end
 
@@ -103,7 +103,7 @@ RSpec.describe Luqum::Elasticsearch::Nested do
       bool_query2 = { "bool" => { "must" => [term3, inner_nested] } }
 
       queries = described_class.extract_nested_queries(
-        { "nested" => { "path" => "my", "query" => bool_query2 } }
+        { "nested" => { "path" => "my", "query" => bool_query2 } },
       )
 
       expect(queries).to eq(
@@ -114,17 +114,17 @@ RSpec.describe Luqum::Elasticsearch::Nested do
             "nested" => {
               "path" => "my",
               "_name" => "bar",
-              "query" => { "nested" => { "path" => "my.your", "query" => term1 } }
-            }
+              "query" => { "nested" => { "path" => "my.your", "query" => term1 } },
+            },
           },
           {
             "nested" => {
               "path" => "my",
               "_name" => "baz",
-              "query" => { "nested" => { "path" => "my.your", "query" => term2 } }
-            }
-          }
-        ]
+              "query" => { "nested" => { "path" => "my.your", "query" => term2 } },
+            },
+          },
+        ],
       )
     end
 
@@ -139,7 +139,7 @@ RSpec.describe Luqum::Elasticsearch::Nested do
       bool_query4 = { "bool" => { "must" => [term3, bool_query3] } }
 
       queries = described_class.extract_nested_queries(
-        { "nested" => { "path" => "my", "query" => bool_query4 } }
+        { "nested" => { "path" => "my", "query" => bool_query4 } },
       )
 
       expect(queries).to eq(
@@ -151,23 +151,23 @@ RSpec.describe Luqum::Elasticsearch::Nested do
             "nested" => {
               "path" => "my",
               "_name" => "foo",
-              "query" => { "nested" => { "path" => "my.your", "query" => term2 } }
-            }
+              "query" => { "nested" => { "path" => "my.your", "query" => term2 } },
+            },
           },
           {
             "nested" => {
               "path" => "my",
-              "query" => { "nested" => { "path" => "my.your", "query" => bool_query1 } }
-            }
+              "query" => { "nested" => { "path" => "my.your", "query" => bool_query1 } },
+            },
           },
           {
             "nested" => {
               "path" => "my",
               "_name" => "bar",
-              "query" => { "nested" => { "path" => "my.your", "query" => term1 } }
-            }
-          }
-        ]
+              "query" => { "nested" => { "path" => "my.your", "query" => term1 } },
+            },
+          },
+        ],
       )
     end
 
@@ -183,7 +183,7 @@ RSpec.describe Luqum::Elasticsearch::Nested do
       bool_query4 = { "bool" => { "must" => [term3, bool_query3] } }
 
       queries = described_class.extract_nested_queries(
-        { "nested" => { "path" => "my", "query" => bool_query4 } }
+        { "nested" => { "path" => "my", "query" => bool_query4 } },
       )
 
       expect(queries).to eq(
@@ -196,17 +196,17 @@ RSpec.describe Luqum::Elasticsearch::Nested do
             "nested" => {
               "path" => "my",
               "_name" => "foo",
-              "query" => { "nested" => { "path" => "my.his", "query" => term2 } }
-            }
+              "query" => { "nested" => { "path" => "my.his", "query" => term2 } },
+            },
           },
           {
             "nested" => {
               "path" => "my",
               "_name" => "bar",
-              "query" => { "nested" => { "path" => "my.your", "query" => term1 } }
-            }
-          }
-        ]
+              "query" => { "nested" => { "path" => "my.your", "query" => term1 } },
+            },
+          },
+        ],
       )
     end
   end
@@ -216,7 +216,7 @@ RSpec.describe Luqum::Elasticsearch::Nested do
       term = { "term" => { "text" => { "value" => "bar", "_name" => "bar" } } }
       query = [
         { "query" => term, "_name" => "spam" },
-        { "query" => term, "_name" => "beurre" }
+        { "query" => term, "_name" => "beurre" },
       ]
 
       expect(described_class.get_first_name(query)).to eq("spam")

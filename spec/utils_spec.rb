@@ -1,66 +1,66 @@
 require "luqum/tree"
 
 RSpec.describe Luqum::Utils do
-  def word(value, **kwargs)
-    Luqum::Tree::Word.new(value, **kwargs)
+  def word(value, **)
+    Luqum::Tree::Word.new(value, **)
   end
 
-  def group(expr, **kwargs)
-    Luqum::Tree::Group.new(expr, **kwargs)
+  def group(expr, **)
+    Luqum::Tree::Group.new(expr, **)
   end
 
-  def field_group(expr, **kwargs)
-    Luqum::Tree::FieldGroup.new(expr, **kwargs)
+  def field_group(expr, **)
+    Luqum::Tree::FieldGroup.new(expr, **)
   end
 
-  def and_op(*children, **kwargs)
-    Luqum::Tree::AndOperation.new(*children, **kwargs)
+  def and_op(*children, **)
+    Luqum::Tree::AndOperation.new(*children, **)
   end
 
-  def or_op(*children, **kwargs)
-    Luqum::Tree::OrOperation.new(*children, **kwargs)
+  def or_op(*children, **)
+    Luqum::Tree::OrOperation.new(*children, **)
   end
 
-  def bool_op(*children, **kwargs)
-    Luqum::Tree::BoolOperation.new(*children, **kwargs)
+  def bool_op(*children, **)
+    Luqum::Tree::BoolOperation.new(*children, **)
   end
 
-  def unknown_op(*children, **kwargs)
-    Luqum::Tree::UnknownOperation.new(*children, **kwargs)
+  def unknown_op(*children, **)
+    Luqum::Tree::UnknownOperation.new(*children, **)
   end
 
-  def prohibit(expr, **kwargs)
-    Luqum::Tree::Prohibit.new(expr, **kwargs)
+  def prohibit(expr, **)
+    Luqum::Tree::Prohibit.new(expr, **)
   end
 
-  def plus(expr, **kwargs)
-    Luqum::Tree::Plus.new(expr, **kwargs)
+  def plus(expr, **)
+    Luqum::Tree::Plus.new(expr, **)
   end
 
-  def from(expr, include: true, **kwargs)
-    Luqum::Tree::From.new(expr, include: include, **kwargs)
+  def from(expr, include: true, **)
+    Luqum::Tree::From.new(expr, include: include, **)
   end
 
-  def to(expr, include: true, **kwargs)
-    Luqum::Tree::To.new(expr, include: include, **kwargs)
+  def to(expr, include: true, **)
+    Luqum::Tree::To.new(expr, include: include, **)
   end
 
-  def range(low, high, include_low: true, include_high: true, **kwargs)
+  def range(low, high, include_low: true, include_high: true, **)
     Luqum::Tree::Range.new(
       low,
       high,
       include_low: include_low,
       include_high: include_high,
-      **kwargs
+      **,
     )
   end
 
-  def search_field(name, expr, **kwargs)
-    Luqum::Tree::SearchField.new(name, expr, **kwargs)
+  def search_field(name, expr, **)
+    Luqum::Tree::SearchField.new(name, expr, **)
   end
 
-  def boost(expr, force:, **kwargs)
-    Luqum::Tree::Boost.new(expr, force: force, **kwargs)
+  def boost(expr, force:, **)
+    Luqum::Tree::Boost.new(expr, force: force, **)
   end
 
   describe Luqum::Utils::UnknownOperationResolver do
@@ -68,12 +68,12 @@ RSpec.describe Luqum::Utils do
       tree = unknown_op(
         word("a"),
         word("b"),
-        or_op(word("c"), word("d"))
+        or_op(word("c"), word("d")),
       )
       expected = and_op(
         word("a"),
         word("b"),
-        or_op(word("c"), word("d"))
+        or_op(word("c"), word("d")),
       )
 
       resolver = described_class.new(resolve_to: Luqum::Tree::AndOperation)
@@ -84,12 +84,12 @@ RSpec.describe Luqum::Utils do
       tree = unknown_op(
         word("a"),
         word("b"),
-        and_op(word("c"), word("d"))
+        and_op(word("c"), word("d")),
       )
       expected = or_op(
         word("a"),
         word("b"),
-        and_op(word("c"), word("d"))
+        and_op(word("c"), word("d")),
       )
 
       resolver = described_class.new(resolve_to: Luqum::Tree::OrOperation)
@@ -100,12 +100,12 @@ RSpec.describe Luqum::Utils do
       tree = unknown_op(
         word("a"),
         word("b"),
-        unknown_op(word("c"), word("d"))
+        unknown_op(word("c"), word("d")),
       )
       expected = and_op(
         word("a"),
         word("b"),
-        and_op(word("c"), word("d"))
+        and_op(word("c"), word("d")),
       )
 
       resolver = described_class.new(resolve_to: nil)
@@ -119,7 +119,7 @@ RSpec.describe Luqum::Utils do
         word("b"),
         group(bool_op(plus(word("f")), plus(word("g")))),
         prohibit(group(bool_op(word("c"), word("d")))),
-        plus(word("e"))
+        plus(word("e")),
       )
 
       resolver = described_class.new(resolve_to: Luqum::Tree::BoolOperation)
@@ -133,14 +133,14 @@ RSpec.describe Luqum::Utils do
         unknown_op(word("c"), word("d")),
         and_op(
           word("e"),
-          unknown_op(word("f"), word("g"))
+          unknown_op(word("f"), word("g")),
         ),
         unknown_op(word("i"), word("j")),
         or_op(
           word("k"),
-          unknown_op(word("l"), word("m"))
+          unknown_op(word("l"), word("m")),
         ),
-        unknown_op(word("n"), word("o"))
+        unknown_op(word("n"), word("o")),
       )
       expected = or_op(
         word("a"),
@@ -148,14 +148,14 @@ RSpec.describe Luqum::Utils do
         or_op(word("c"), word("d")),
         and_op(
           word("e"),
-          and_op(word("f"), word("g"))
+          and_op(word("f"), word("g")),
         ),
         and_op(word("i"), word("j")),
         or_op(
           word("k"),
-          or_op(word("l"), word("m"))
+          or_op(word("l"), word("m")),
         ),
-        or_op(word("n"), word("o"))
+        or_op(word("n"), word("o")),
       )
 
       resolver = described_class.new(resolve_to: nil)
@@ -169,13 +169,13 @@ RSpec.describe Luqum::Utils do
         group(
           and_op(
             word("c"),
-            unknown_op(word("d"), word("e"))
-          )
+            unknown_op(word("d"), word("e")),
+          ),
         ),
         unknown_op(word("f"), word("g")),
         group(
-          unknown_op(word("h"), word("i"))
-        )
+          unknown_op(word("h"), word("i")),
+        ),
       )
       expected = or_op(
         word("a"),
@@ -183,13 +183,13 @@ RSpec.describe Luqum::Utils do
         group(
           and_op(
             word("c"),
-            and_op(word("d"), word("e"))
-          )
+            and_op(word("d"), word("e")),
+          ),
         ),
         or_op(word("f"), word("g")),
         group(
-          and_op(word("h"), word("i"))
-        )
+          and_op(word("h"), word("i")),
+        ),
       )
 
       resolver = described_class.new(resolve_to: nil)
@@ -235,7 +235,7 @@ RSpec.describe Luqum::Utils do
         word("1", tail: " "),
         word("*", head: " "),
         include_low: true,
-        include_high: true
+        include_high: true,
       )
 
       [true, false].each do |merge_ranges|
@@ -252,7 +252,7 @@ RSpec.describe Luqum::Utils do
         word("*", tail: " "),
         word("1", head: " "),
         include_low: true,
-        include_high: false
+        include_high: false,
       )
 
       [true, false].each do |merge_ranges|
@@ -266,15 +266,15 @@ RSpec.describe Luqum::Utils do
     it "merges complementary open ranges inside AND" do
       tree = and_op(
         from(word("1"), include: true),
-        to(word("2"), include: true)
+        to(word("2"), include: true),
       )
       expected = and_op(
         range(
           word("1", tail: " "),
           word("2", head: " "),
           include_low: true,
-          include_high: true
-        )
+          include_high: true,
+        ),
       )
 
       resolver = described_class.new(merge_ranges: true)
@@ -286,21 +286,21 @@ RSpec.describe Luqum::Utils do
     it "does not merge complementary open ranges when merge_ranges is false" do
       tree = and_op(
         from(word("1"), include: true),
-        to(word("2"), include: true)
+        to(word("2"), include: true),
       )
       expected = and_op(
         range(
           word("1", tail: " "),
           word("*", head: " "),
           include_low: true,
-          include_high: true
+          include_high: true,
         ),
         range(
           word("*", tail: " "),
           word("2", head: " "),
           include_low: true,
-          include_high: true
-        )
+          include_high: true,
+        ),
       )
 
       resolver = described_class.new(merge_ranges: false)
@@ -312,21 +312,21 @@ RSpec.describe Luqum::Utils do
     it "leaves unjoinable open ranges separate" do
       tree = and_op(
         from(word("1"), include: false),
-        from(word("2"), include: true)
+        from(word("2"), include: true),
       )
       expected = and_op(
         range(
           word("1", tail: " "),
           word("*", head: " "),
           include_low: false,
-          include_high: true
+          include_high: true,
         ),
         range(
           word("2", tail: " "),
           word("*", head: " "),
           include_low: true,
-          include_high: true
-        )
+          include_high: true,
+        ),
       )
 
       resolver = described_class.new(merge_ranges: true)
@@ -339,7 +339,7 @@ RSpec.describe Luqum::Utils do
       tree = and_op(
         range(word("1"), word("2"), include_low: true, include_high: true),
         range(word("*"), word("*"), include_low: true, include_high: true),
-        range(word("1"), word("*"), include_low: true, include_high: true)
+        range(word("1"), word("*"), include_low: true, include_high: true),
       )
 
       [true, false].each do |merge_ranges|
@@ -354,12 +354,12 @@ RSpec.describe Luqum::Utils do
         range(word("*"), word("*"), include_low: true, include_high: true),
         range(word("*"), word("3"), include_low: true, include_high: true),
         range(word("1"), word("*"), include_low: true, include_high: true),
-        range(word("4"), word("*"), include_low: true, include_high: true)
+        range(word("4"), word("*"), include_low: true, include_high: true),
       )
       expected = and_op(
         range(word("1"), word("2"), include_low: true, include_high: true),
         range(word("*"), word("*"), include_low: true, include_high: true),
-        range(word("4"), word("3"), include_low: true, include_high: true)
+        range(word("4"), word("3"), include_low: true, include_high: true),
       )
 
       resolver = described_class.new(merge_ranges: true)
@@ -371,7 +371,7 @@ RSpec.describe Luqum::Utils do
     it "does not merge ranges inside unknown operations" do
       tree = unknown_op(
         range(word("1"), word("*"), include_low: true, include_high: true),
-        range(word("*"), word("2"), include_low: true, include_high: true)
+        range(word("*"), word("2"), include_low: true, include_high: true),
       )
 
       resolver = described_class.new(merge_ranges: true)
@@ -381,7 +381,7 @@ RSpec.describe Luqum::Utils do
     it "does not merge ranges across search fields" do
       tree = and_op(
         range(word("1"), word("*"), include_low: true, include_high: true),
-        search_field("foo", range(word("*"), word("2"), include_low: true, include_high: true))
+        search_field("foo", range(word("*"), word("2"), include_low: true, include_high: true)),
       )
 
       resolver = described_class.new(merge_ranges: true)
@@ -391,7 +391,7 @@ RSpec.describe Luqum::Utils do
     it "does not merge boosted ranges" do
       tree = and_op(
         boost(range(word("1"), word("*"), include_low: true, include_high: true), force: 2),
-        boost(range(word("*"), word("2"), include_low: true, include_high: true), force: 2)
+        boost(range(word("*"), word("2"), include_low: true, include_high: true), force: 2),
       )
 
       resolver = described_class.new(merge_ranges: true)

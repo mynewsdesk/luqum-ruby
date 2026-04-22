@@ -6,7 +6,7 @@ module Luqum
     RSpec.describe Luqum::Pretty::Prettifier do
       big_tree = AndOperation.new(
         Group.new(OrOperation.new(Word.new("baaaaaaaaaar"), Word.new("baaaaaaaaaaaaaz"))),
-        Word.new("fooooooooooo")
+        Word.new("fooooooooooo"),
       )
       fat_tree = AndOperation.new(
         SearchField.new(
@@ -14,17 +14,17 @@ module Luqum
           FieldGroup.new(
             OrOperation.new(
               Word.new("fiiiiiiiiiiz"),
-              AndOperation.new(Word.new("baaaaaaaaaar"), Word.new("baaaaaaaaaaaaaz"))
-            )
-          )
+              AndOperation.new(Word.new("baaaaaaaaaar"), Word.new("baaaaaaaaaaaaaz")),
+            ),
+          ),
         ),
-        AndOperation.new(Word.new("fooooooooooo"), Word.new("wiiiiiiiiiz"))
+        AndOperation.new(Word.new("fooooooooooo"), Word.new("wiiiiiiiiiz")),
       )
 
       it "fits on one line when short enough" do
         tree = AndOperation.new(
           Group.new(OrOperation.new(Word.new("bar"), Word.new("baz"))),
-          Word.new("foo")
+          Word.new("foo"),
         )
         expect(Luqum::Pretty.prettify(tree)).to eq("( bar OR baz ) AND foo")
       end
@@ -33,7 +33,7 @@ module Luqum
         prettify = Luqum::Pretty::Prettifier.new(indent: 8, max_len: 20)
         tree = UnknownOperation.new(
           Group.new(UnknownOperation.new(Word.new("baaaaaaaaaar"), Word.new("baaaaaaaaaaaaaz"))),
-          Word.new("fooooooooooo")
+          Word.new("fooooooooooo"),
         )
         expect("\n" + prettify.call(tree)).to eq(<<~OUT.chomp)
 
@@ -49,7 +49,7 @@ module Luqum
         prettify = Luqum::Pretty::Prettifier.new(indent: 8, max_len: 20)
         tree = OrOperation.new(
           UnknownOperation.new(Word.new("baaaaaaaaaar"), Word.new("baaaaaaaaaaaaaz")),
-          Word.new("fooooooooooo")
+          Word.new("fooooooooooo"),
         )
         expect("\n" + prettify.call(tree)).to eq(<<~OUT.chomp)
 

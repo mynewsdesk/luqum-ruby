@@ -7,6 +7,7 @@ module Luqum
 
     def self.format_decimal(value)
       return value.to_s unless value.is_a?(BigDecimal)
+
       s = value.to_s("F")
       s.sub(/\.0+\z/, "")
     end
@@ -77,7 +78,7 @@ module Luqum
         if values.length != expected
           supplied = values.empty? ? "no" : values.length.to_s
           raise ArgumentError,
-                "#{self.class} accepts #{expected} children, and you try to set #{supplied} children"
+            "#{self.class} accepts #{expected} children, and you try to set #{supplied} children"
         end
         self.class.children_attrs.each_with_index do |attr, i|
           instance_variable_set("@#{attr}", values[i])
@@ -87,6 +88,7 @@ module Luqum
       # (start, end) position of this element; when head_tail is true, include head/tail.
       def span(head_tail: false)
         return [nil, nil] if @pos.nil?
+
         start = @pos - (head_tail ? @head.length : 0)
         finish = @pos + @size + (head_tail ? @tail.length : 0)
         [start, finish]
@@ -103,23 +105,25 @@ module Luqum
 
       def inspect
         kids = children.map(&:inspect).join(", ")
-        "#{self.class.name.split("::").last}(#{kids})"
+        "#{self.class.name.split('::').last}(#{kids})"
       end
 
       def ==(other)
         return true if equal?(other)
         return false unless other.is_a?(Item)
         return false unless self.class == other.class
+
         own_children = children
         other_children = other.children
         return false unless own_children.length == other_children.length
         return false unless self.class.equality_attrs.all? { |a|
           instance_variable_get("@#{a}") == other.instance_variable_get("@#{a}")
         }
+
         own_children.zip(other_children).all? { |a, b| a == b }
       end
 
-      alias_method :eql?, :==
+      alias eql? ==
 
       def hash
         attrs = self.class.equality_attrs.map { |a| instance_variable_get("@#{a}") }
@@ -154,10 +158,10 @@ module Luqum
 
       attr_accessor :name, :expr
 
-      def initialize(name, expr, **kwargs)
+      def initialize(name, expr, **)
         @name = name
         @expr = expr
-        super(**kwargs)
+        super(**)
       end
 
       def render
@@ -175,9 +179,9 @@ module Luqum
 
       attr_accessor :expr
 
-      def initialize(expr, **kwargs)
+      def initialize(expr, **)
         @expr = expr
-        super(**kwargs)
+        super(**)
       end
 
       def render
@@ -202,12 +206,12 @@ module Luqum
 
       attr_accessor :low, :high, :include_low, :include_high
 
-      def initialize(low, high, include_low: true, include_high: true, **kwargs)
+      def initialize(low, high, include_low: true, include_high: true, **)
         @low = low
         @high = high
         @include_low = include_low
         @include_high = include_high
-        super(**kwargs)
+        super(**)
       end
 
       def render
@@ -221,9 +225,9 @@ module Luqum
 
       attr_accessor :value
 
-      def initialize(value, **kwargs)
+      def initialize(value, **)
         @value = value
-        super(**kwargs)
+        super(**)
       end
 
       def unescaped_value
@@ -236,6 +240,7 @@ module Luqum
 
       def iter_wildcards
         return enum_for(:iter_wildcards) unless block_given?
+
         pos = 0
         while (m = @value.match(WILDCARDS_PATTERN, pos))
           span = [m.begin(0), m.end(0)]
@@ -267,7 +272,7 @@ module Luqum
       end
 
       def inspect
-        "#{self.class.name.split("::").last}(#{to_s.inspect})"
+        "#{self.class.name.split('::').last}(#{to_s.inspect})"
       end
     end
 
@@ -299,11 +304,11 @@ module Luqum
 
       attr_accessor :term, :degree
 
-      def initialize(term, degree: nil, **kwargs)
+      def initialize(term, degree: nil, **)
         @term = term
         @implicit_degree = degree.nil?
         @degree = normalize_degree(degree)
-        super(**kwargs)
+        super(**)
       end
 
       def implicit_degree?
@@ -316,7 +321,7 @@ module Luqum
       end
 
       def inspect
-        "#{self.class.name.split("::").last}(#{@term.inspect}, #{format_degree})"
+        "#{self.class.name.split('::').last}(#{@term.inspect}, #{format_degree})"
       end
 
       private
@@ -364,7 +369,7 @@ module Luqum
       attr_accessor :expr, :force
       attr_reader :implicit_force
 
-      def initialize(expr, force: nil, **kwargs)
+      def initialize(expr, force: nil, **)
         @expr = expr
         @implicit_force = force.nil?
         @force = if force.nil?
@@ -372,7 +377,7 @@ module Luqum
                  else
                    BigDecimal(force.to_s)
                  end
-        super(**kwargs)
+        super(**)
       end
 
       def render
@@ -388,9 +393,9 @@ module Luqum
     class BaseOperation < Item
       attr_accessor :operands
 
-      def initialize(*operands, **kwargs)
+      def initialize(*operands, **)
         @operands = operands
-        super(**kwargs)
+        super(**)
       end
 
       def render
@@ -438,9 +443,9 @@ module Luqum
 
       attr_accessor :a
 
-      def initialize(a, **kwargs)
+      def initialize(a, **)
         @a = a
-        super(**kwargs)
+        super(**)
       end
 
       def render
@@ -468,9 +473,9 @@ module Luqum
 
       attr_accessor :include
 
-      def initialize(a, include: true, **kwargs)
+      def initialize(a, include: true, **)
         @include = include
-        super(a, **kwargs)
+        super(a, **)
       end
 
       def render

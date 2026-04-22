@@ -1,4 +1,3 @@
-require "set"
 require "luqum/deprecated_utils"
 require "luqum/visitor"
 
@@ -13,26 +12,29 @@ module Luqum
         nil,
         Luqum::Tree::AndOperation,
         Luqum::Tree::OrOperation,
-        Luqum::Tree::BoolOperation
+        Luqum::Tree::BoolOperation,
       ].freeze
       DEFAULT_OPERATION = Luqum::Tree::AndOperation
 
       def initialize(resolve_to: nil, add_head: " ")
-        raise ArgumentError, "#{resolve_to.inspect} is not a valid value for resolve_to" unless VALID_OPERATIONS.include?(resolve_to)
+        unless VALID_OPERATIONS.include?(resolve_to)
+          raise ArgumentError,
+            "#{resolve_to.inspect} is not a valid value for resolve_to"
+        end
 
         @resolve_to = resolve_to
         @add_head = add_head
         super(track_parents: true)
       end
 
-      def visit_or_operation(node, context, &block)
+      def visit_or_operation(node, context, &)
         track_last_op(node, context)
-        generic_visit(node, context, &block)
+        generic_visit(node, context, &)
       end
 
-      def visit_and_operation(node, context, &block)
+      def visit_and_operation(node, context, &)
         track_last_op(node, context)
-        generic_visit(node, context, &block)
+        generic_visit(node, context, &)
       end
 
       def visit_unknown_operation(node, context)
@@ -84,9 +86,9 @@ module Luqum
         super(track_parents: true)
       end
 
-      def visit_and_operation(node, context)
+      def visit_and_operation(node, context, &)
         unless @merge_ranges
-          generic_visit(node, context) { |new_node| yield new_node }
+          generic_visit(node, context, &)
           return
         end
 
@@ -121,12 +123,12 @@ module Luqum
         yield new_node
       end
 
-      def visit_from(node, context)
-        visit_from_to(node, context, :low) { |new_node| yield new_node }
+      def visit_from(node, context, &)
+        visit_from_to(node, context, :low, &)
       end
 
-      def visit_to(node, context)
-        visit_from_to(node, context, :high) { |new_node| yield new_node }
+      def visit_to(node, context, &)
+        visit_from_to(node, context, :high, &)
       end
 
       def call(tree)
@@ -146,29 +148,29 @@ module Luqum
       end
 
       def visit_from_to(node, context, bound_side)
-        if bound_side == :low
-          new_node = Luqum::Tree::Range.new(
-            nil,
-            WILDCARD_WORD.clone_item,
-            include_low: node.include,
-            include_high: true,
-            pos: node.pos,
-            size: node.size,
-            head: node.head,
-            tail: node.tail
-          )
-        else
-          new_node = Luqum::Tree::Range.new(
-            WILDCARD_WORD.clone_item,
-            nil,
-            include_low: true,
-            include_high: node.include,
-            pos: node.pos,
-            size: node.size,
-            head: node.head,
-            tail: node.tail
-          )
-        end
+        new_node = if bound_side == :low
+                     Luqum::Tree::Range.new(
+                       nil,
+                       WILDCARD_WORD.clone_item,
+                       include_low: node.include,
+                       include_high: true,
+                       pos: node.pos,
+                       size: node.size,
+                       head: node.head,
+                       tail: node.tail,
+                     )
+                   else
+                     Luqum::Tree::Range.new(
+                       WILDCARD_WORD.clone_item,
+                       nil,
+                       include_low: true,
+                       include_high: node.include,
+                       pos: node.pos,
+                       size: node.size,
+                       head: node.head,
+                       tail: node.tail,
+                     )
+                   end
 
         child = collect_children(node, new_node, context).first
         if bound_side == :low

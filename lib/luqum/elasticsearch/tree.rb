@@ -12,7 +12,7 @@ module Luqum
       class AbstractEItem
         include JsonSerializableMixin
 
-        BASE_KEYS_TO_ADD = ["boost", "fuzziness", "_name"].freeze
+        BASE_KEYS_TO_ADD = %w[boost fuzziness _name].freeze
 
         attr_accessor :boost, :zero_terms_query, :field_options
 
@@ -23,8 +23,11 @@ module Luqum
           @zero_terms_query = "none"
           @field_options = field_options || {}
           @_name = _name unless _name.nil?
-          @additional_keys_to_add = self.class.const_defined?(:DEFAULT_ADDITIONAL_KEYS_TO_ADD, false) ?
-            self.class::DEFAULT_ADDITIONAL_KEYS_TO_ADD.dup : []
+          @additional_keys_to_add = if self.class.const_defined?(:DEFAULT_ADDITIONAL_KEYS_TO_ADD, false)
+                                      self.class::DEFAULT_ADDITIONAL_KEYS_TO_ADD.dup
+                                    else
+                                      []
+                                    end
         end
 
         def json
@@ -34,7 +37,7 @@ module Luqum
           inner_json.delete("type") if result.nil? || result == false
 
           current_method = query_method
-          data = if ["query_string", "multi_match"].include?(current_method)
+          data = if %w[query_string multi_match].include?(current_method)
                    { current_method => inner_json }
                  else
                    { current_method => { field_name => inner_json } }
@@ -77,9 +80,7 @@ module Luqum
           @fuzzy = value
         end
 
-        def _name
-          @_name
-        end
+        attr_reader :_name
 
         def query_method
           if !analyzed? && value_has_wildcard_char?
@@ -119,8 +120,8 @@ module Luqum
 
         attr_accessor :q
 
-        def initialize(q, *args, **kwargs)
-          super(*args, **kwargs)
+        def initialize(q, *, **)
+          super(*, **)
           @q = q
         end
 
@@ -139,8 +140,8 @@ module Luqum
 
         attr_accessor :q, :slop
 
-        def initialize(phrase, *args, **kwargs)
-          super(*args, method: "match_phrase", **kwargs)
+        def initialize(phrase, *, **)
+          super(*, method: "match_phrase", **)
           normalized = phrase.gsub(/\s+/, " ")
           @q = normalized[1...-1]
         end
@@ -158,8 +159,8 @@ module Luqum
       class ERange < AbstractEItem
         attr_accessor :lt, :lte, :gt, :gte
 
-        def initialize(*args, lt: nil, lte: nil, gt: nil, gte: nil, **kwargs)
-          super(*args, method: "range", **kwargs)
+        def initialize(*, lt: nil, lte: nil, gt: nil, gte: nil, **)
+          super(*, method: "range", **)
           unless lt.nil? || lt == "*"
             @lt = lt
             add_additional_key("lt")
@@ -206,7 +207,6 @@ module Luqum
           @nested_path = [nested_path]
           @items = exclude_nested_children(items)
           @_name = _name
-          nested_fields
         end
 
         def nested_path
@@ -297,14 +297,14 @@ module Luqum
           @field_options = field_options
         end
 
-        def build(cls, *args, **kwargs)
+        def build(cls, *, **kwargs)
           if cls <= AbstractEItem
-            kwargs = kwargs.key?(:field_options) ? kwargs : kwargs.merge(field_options: @field_options)
-            cls.new(*args, no_analyze: @no_analyze, **kwargs)
+            kwargs = kwargs.merge(field_options: @field_options) unless kwargs.key?(:field_options)
+            cls.new(*, no_analyze: @no_analyze, **kwargs)
           elsif cls <= ENested
-            cls.new(*args, nested_fields: @nested_fields, **kwargs)
+            cls.new(*, nested_fields: @nested_fields, **kwargs)
           else
-            cls.new(*args, **kwargs)
+            cls.new(*, **kwargs)
           end
         end
       end

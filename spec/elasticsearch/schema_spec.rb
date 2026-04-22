@@ -10,8 +10,8 @@ RSpec.describe Luqum::Elasticsearch::SchemaAnalyzer do
               "type" => "text",
               "fields" => {
                 "english" => { "analyzer" => "english" },
-                "raw" => { "type" => "keyword" }
-              }
+                "raw" => { "type" => "keyword" },
+              },
             },
             "lastname" => { "type" => "text" },
             "book" => {
@@ -21,25 +21,25 @@ RSpec.describe Luqum::Elasticsearch::SchemaAnalyzer do
                 "isbn" => {
                   "type" => "object",
                   "properties" => {
-                    "ref" => { "type" => "keyword" }
-                  }
+                    "ref" => { "type" => "keyword" },
+                  },
                 },
                 "format" => {
                   "type" => "nested",
                   "properties" => {
-                    "ftype" => { "type" => "keyword" }
-                  }
-                }
-              }
-            }
-          }
+                    "ftype" => { "type" => "keyword" },
+                  },
+                },
+              },
+            },
+          },
         },
         "publish" => {
           "type" => "nested",
           "properties" => {
             "site" => { "type" => "keyword" },
-            "idnum" => { "type" => "long" }
-          }
+            "idnum" => { "type" => "long" },
+          },
         },
         "manager" => {
           "type" => "object",
@@ -48,8 +48,8 @@ RSpec.describe Luqum::Elasticsearch::SchemaAnalyzer do
             "address" => {
               "type" => "object",
               "properties" => {
-                "zipcode" => { "type" => "keyword" }
-              }
+                "zipcode" => { "type" => "keyword" },
+              },
             },
             "subteams" => {
               "type" => "nested",
@@ -59,24 +59,24 @@ RSpec.describe Luqum::Elasticsearch::SchemaAnalyzer do
                   "properties" => {
                     "name" => {
                       "type" => "text",
-                      "fields" => { "raw" => { "type" => "keyword" } }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                      "fields" => { "raw" => { "type" => "keyword" } },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     }
   end
 
   let(:index_settings) do
     {
       "settings" => {
-        "query" => { "default_field" => "text" }
+        "query" => { "default_field" => "text" },
       },
-      "mappings" => mapping
+      "mappings" => mapping,
     }
   end
 
@@ -95,8 +95,8 @@ RSpec.describe Luqum::Elasticsearch::SchemaAnalyzer do
         "manager.address.zipcode",
         "manager.subteams.supervisor.name.raw",
         "publish.idnum",
-        "publish.site"
-      ]
+        "publish.site",
+      ],
     )
   end
 
@@ -109,20 +109,20 @@ RSpec.describe Luqum::Elasticsearch::SchemaAnalyzer do
           "lastname" => {},
           "book" => {
             "format" => {
-              "ftype" => {}
+              "ftype" => {},
             },
             "title" => {},
-            "isbn" => {}
-          }
+            "isbn" => {},
+          },
         },
         "publish" => {
           "site" => {},
-          "idnum" => {}
+          "idnum" => {},
         },
         "manager.subteams" => {
-          "supervisor" => {}
-        }
-      }
+          "supervisor" => {},
+        },
+      },
     )
   end
 
@@ -133,8 +133,8 @@ RSpec.describe Luqum::Elasticsearch::SchemaAnalyzer do
         "author.book.isbn.ref",
         "manager.address.zipcode",
         "manager.firstname",
-        "manager.subteams.supervisor.name"
-      ]
+        "manager.subteams.supervisor.name",
+      ],
     )
   end
 
@@ -144,8 +144,8 @@ RSpec.describe Luqum::Elasticsearch::SchemaAnalyzer do
       [
         "author.firstname.english",
         "author.firstname.raw",
-        "manager.subteams.supervisor.name.raw"
-      ]
+        "manager.subteams.supervisor.name.raw",
+      ],
     )
   end
 

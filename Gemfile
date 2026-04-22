@@ -1,12 +1,13 @@
+# frozen_string_literal: true
+
 source "https://rubygems.org"
 
 gemspec
 
-gem "bigdecimal"
-
 group :development, :test do
-  gem "rspec", "~> 3.13"
-  gem "racc", "~> 1.8"
-  gem "rexical", "~> 1.0"
-  gem "rake", "~> 13.0"
+  gem "racc"
+  gem "rake"
+  gem "rexical"
+  gem "rspec"
+  gem "rubocop-mynewsdesk", git: "https://github.com/mynewsdesk/mnd-rubocop"
 end

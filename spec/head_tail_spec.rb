@@ -93,7 +93,7 @@ module Luqum
           p = [
             Item.new,
             Item.new(pos: 1, size: 3, head: "\t", tail: "\n"),
-            Item.new(pos: 4, size: 4, head: "\r", tail: "  ")
+            Item.new(pos: 4, size: 4, head: "\r", tail: "  "),
           ]
           manager.binary_operation(p, op_tail: "")
           expect(p[0].pos).to eq(0)
@@ -116,7 +116,7 @@ module Luqum
           p = [
             Item.new,
             Item.new(head: "\t", tail: "\r", pos: 3, size: 3),
-            Item.new(head: "\n", tail: "  ", pos: 5, size: 5)
+            Item.new(head: "\n", tail: "  ", pos: 5, size: 5),
           ]
           manager.unary(p)
           expect(p[0].head).to eq("\t")
@@ -133,7 +133,7 @@ module Luqum
           p = [
             Item.new,
             Item.new(head: "\t", tail: "\r", pos: 3, size: 3),
-            Item.new(head: "\n", tail: "  ", pos: 5, size: 5)
+            Item.new(head: "\n", tail: "  ", pos: 5, size: 5),
           ]
           manager.post_unary(p)
           expect(p[0].head).to eq("")
@@ -150,7 +150,7 @@ module Luqum
             Item.new,
             Item.new(head: "\t", tail: "\r", pos: 3, size: 1),
             Item.new(head: "\n", tail: "  ", pos: 5, size: 3),
-            Item.new(head: "\n\n", tail: "\t\t", pos: 7, size: 1)
+            Item.new(head: "\n\n", tail: "\t\t", pos: 7, size: 1),
           ]
           manager.paren(p)
           expect(p[0].head).to eq("\t")
@@ -170,7 +170,7 @@ module Luqum
             Item.new(head: "\n", tail: "  ", pos: 5, size: 3),
             Item.new(head: "\n\n", tail: "\t\t", pos: 7, size: 2),
             Item.new(head: "\r\r", tail: " \t ", pos: 9, size: 5),
-            Item.new(head: " \r ", tail: " \n ", pos: 12, size: 1)
+            Item.new(head: " \r ", tail: " \n ", pos: 12, size: 1),
           ]
           manager.range(p)
           expect(p[0].head).to eq("\t")
@@ -192,7 +192,7 @@ module Luqum
             Item.new,
             Item.new(head: "\t", tail: "\r", pos: 3, size: 3),
             Item.new(head: "\n", tail: "  ", pos: 5, size: 1),
-            Item.new(head: "\n\n", tail: "\t\t", pos: 7, size: 5)
+            Item.new(head: "\n\n", tail: "\t\t", pos: 7, size: 5),
           ]
           manager.search_field(p)
           expect(p[0].head).to eq("\t")
