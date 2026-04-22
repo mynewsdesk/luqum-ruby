@@ -208,8 +208,8 @@ module Luqum
       end
 
       describe "Parser head/tail integration" do
-        def parse(query)
-          Luqum::Parser.parse(query)
+        def parse(s)
+          Luqum::Parser.parse(s)
         end
 
         it "captures head/tail on a simple word" do

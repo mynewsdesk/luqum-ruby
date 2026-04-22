@@ -122,9 +122,9 @@ module Luqum
 
         attr_accessor :q
 
-        def initialize(query, *, **)
+        def initialize(q, *, **)
           super(*, **)
-          @q = query
+          @q = q
         end
 
         def json
@@ -162,20 +162,18 @@ module Luqum
       class ERange < AbstractEItem
         attr_accessor :lt, :lte, :gt, :gte
 
-        def initialize(*, lte: nil, gte: nil, **options)
-          less_than = options.delete(:lt)
-          greater_than = options.delete(:gt)
-          super(*, method: "range", **options)
-          unless less_than.nil? || less_than == "*"
-            @lt = less_than
+        def initialize(*, lt: nil, lte: nil, gt: nil, gte: nil, **)
+          super(*, method: "range", **)
+          unless lt.nil? || lt == "*"
+            @lt = lt
             add_additional_key("lt")
           end
           unless lte.nil? || lte == "*"
             @lte = lte
             add_additional_key("lte")
           end
-          unless greater_than.nil? || greater_than == "*"
-            @gt = greater_than
+          unless gt.nil? || gt == "*"
+            @gt = gt
             add_additional_key("gt")
           end
           unless gte.nil? || gte == "*"

@@ -65,8 +65,8 @@ module Luqum
 
       describe "parser" do
         # Helpers
-        def parse(query)
-          Luqum::Parser.parse(query)
+        def parse(s)
+          Luqum::Parser.parse(s)
         end
 
         def expect_parses_to(input, tree)

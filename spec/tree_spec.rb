@@ -199,11 +199,11 @@ module Luqum
       end
 
       describe "clone_item" do
-        def assert_equal_span(actual, expected)
-          expect(actual.pos).to eq(expected.pos)
-          expect(actual.size).to eq(expected.size)
-          expect(actual.head).to eq(expected.head)
-          expect(actual.tail).to eq(expected.tail)
+        def assert_equal_span(a, b)
+          expect(a.pos).to eq(b.pos)
+          expect(a.size).to eq(b.size)
+          expect(a.head).to eq(b.head)
+          expect(a.tail).to eq(b.tail)
         end
 
         it "clones Word with same attributes" do

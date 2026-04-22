@@ -194,8 +194,8 @@ module Luqum
     class Group < BaseGroup; end
     class FieldGroup < BaseGroup; end
 
-    def self.group_to_fieldgroup(group)
-      FieldGroup.new(group.expr, pos: group.pos, size: group.size, head: group.head, tail: group.tail)
+    def self.group_to_fieldgroup(g)
+      FieldGroup.new(g.expr, pos: g.pos, size: g.size, head: g.head, tail: g.tail)
     end
 
     class Range < Item
@@ -430,10 +430,10 @@ module Luqum
     end
 
     # Create an operation between a and b, merging when either is already of the same class.
-    def self.create_operation(cls, left_operand, right_operand, op_tail: " ")
+    def self.create_operation(cls, a, b, op_tail: " ")
       operands = []
-      operands.concat(left_operand.is_a?(cls) ? left_operand.operands : [left_operand])
-      left = right_operand.is_a?(cls) ? right_operand.operands.dup : [right_operand]
+      operands.concat(a.is_a?(cls) ? a.operands : [a])
+      left = b.is_a?(cls) ? b.operands.dup : [b]
       left[0].head = (left[0].head || "") + op_tail
       operands.concat(left)
       cls.new(*operands)
@@ -445,8 +445,8 @@ module Luqum
 
       attr_accessor :a
 
-      def initialize(expr, **)
-        @a = expr
+      def initialize(a, **)
+        @a = a
         super(**)
       end
 
@@ -475,9 +475,9 @@ module Luqum
 
       attr_accessor :include
 
-      def initialize(expr, include: true, **)
+      def initialize(a, include: true, **)
         @include = include
-        super(expr, **)
+        super(a, **)
       end
 
       def render
