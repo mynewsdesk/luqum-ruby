@@ -117,7 +117,7 @@ module Luqum
         end
         elements = apply_stick(elements)
         prefix = level > 0 && !in_one_liner ? @prefix : ""
-        join_char = one_liner ? " " : ("\n#{prefix}")
+        join_char = one_liner ? " " : "\n#{prefix}"
         prefix + elements.flat_map { |c| c.split("\n") }.join(join_char)
       end
     end
