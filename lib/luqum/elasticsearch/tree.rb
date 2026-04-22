@@ -207,6 +207,7 @@ module Luqum
 
         def initialize(nested_path:, nested_fields:, items:, _name: nil, **_kwargs)
           @nested_path = [nested_path]
+          @nested_fields = nested_fields
           @items = exclude_nested_children(items)
           @_name = _name
         end

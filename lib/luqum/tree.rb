@@ -141,7 +141,7 @@ module Luqum
 
     # Placeholder item (think None).
     class NoneItem < Item
-      def to_s(head_tail: false)
+      def to_s(*)
         ""
       end
 
