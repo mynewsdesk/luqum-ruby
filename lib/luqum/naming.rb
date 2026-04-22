@@ -169,7 +169,7 @@ module Luqum
         node.instance_variable_get(NAME_ATTR)
       end
 
-      def auto_name(tree, _targets = nil, _all_names = false)
+      def auto_name(tree, _targets = nil, _all_names: false)
         TreeAutoNamer.new.visit(tree)
       end
 
