@@ -38,10 +38,10 @@ module Luqum
         send(method_name, node, context, &)
       end
 
-      def child_context(node, _child, context, **kwargs)
+      def child_context(_node, _child, context, **kwargs)
         ctx = context.dup
         if @track_parents
-          ctx[:parents] = (context[:parents] || []) + [kwargs[:parent_node] || node]
+          ctx[:parents] = (context[:parents] || []) + [kwargs[:parent_node] || _node]
         end
         ctx
       end
