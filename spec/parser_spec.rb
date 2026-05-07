@@ -61,6 +61,20 @@ module Luqum
                                                   [:RBRACKET, "]"],
                                                 ])
         end
+
+        it "treats Unicode space separators (e.g. NBSP) as token separators" do
+          # Ruby's `\s` doesn't match U+00A0 NO-BREAK SPACE, but Python's does and Lucene
+          # consumers expect "OR" to lex as the operator regardless of which kind of space
+          # surrounds it. Profiles authored in word processors / pasted from browsers
+          # frequently contain NBSPs around operators.
+          nbsp = " "
+          tokens = Luqum::Lexer.new.tokenize("foo#{nbsp}OR#{nbsp}bar")
+          expect(simplify_tokens(tokens)).to eq([
+                                                  [:TERM, Word.new("foo")],
+                                                  [:OR_OP, "OR"],
+                                                  [:TERM, Word.new("bar")],
+                                                ])
+        end
       end
 
       describe "parser" do

@@ -17,14 +17,21 @@ module Luqum
     # A Lucene term: any char that isn't a delimiter or whitespace, with
     # `\\.` escapes, plus a special lookbehind-based allowance so that
     # `T\d{2}:\d{2}(:\d{2})?` (the `:` inside date-times) doesn't end the term.
+    #
+    # We use the POSIX `[[:space:]]` class instead of `\s`. Ruby's `\s` is ASCII-only
+    # (it doesn't match U+00A0 NO-BREAK SPACE, narrow NBSP, ideographic space, etc.),
+    # whereas Python's `\s` is Unicode-aware. Treating Unicode space separators as
+    # whitespace keeps lexing in line with the Python `luqum` reference implementation
+    # — without it, expressions like `OR term` lex `OR ` as a single literal
+    # term rather than the OR operator followed by `term`.
     TERM_RE = %r{
       (?:
-        [^\s:\^~(){}\[\]/"'+\-\\<>]
+        [^[:space:]:\^~(){}\[\]/"'+\-\\<>]
         |
         \\.
       )
       (?:
-        [^\s:\^\\~(){}\[\]]
+        [^[:space:]:\^\\~(){}\[\]]
         |
         \\.
         |
@@ -36,7 +43,7 @@ module Luqum
     REGEX_RE = %r{/(?:[^\\/]|\\.)*/}
     APPROX_RE = /~([0-9.]+)?/
     BOOST_RE = /\^([0-9.]+)?/
-    SEPARATOR_RE = /\s+/
+    SEPARATOR_RE = /[[:space:]]+/
 
     class Token
       attr_accessor :type, :value
