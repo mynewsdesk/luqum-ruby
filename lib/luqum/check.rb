@@ -7,7 +7,7 @@ module Luqum
   module Check
     class LuceneCheck
       FIELD_NAME_RE = /^\w+$/
-      SPACE_RE = /\s/
+      SPACE_RE = /[[:space:]]/
       INVALID_TERM_CHARS_RE = %r{[+/-]}
 
       SIMPLE_EXPR_FIELDS = [

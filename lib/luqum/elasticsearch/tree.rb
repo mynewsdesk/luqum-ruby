@@ -145,7 +145,7 @@ module Luqum
 
         def initialize(phrase, *, **)
           super(*, method: "match_phrase", **)
-          normalized = phrase.gsub(/\s+/, " ")
+          normalized = phrase.gsub(/[[:space:]]+/, " ")
           @q = normalized[1...-1]
         end
 

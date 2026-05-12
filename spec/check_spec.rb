@@ -164,6 +164,14 @@ RSpec.describe Luqum::Check do
       expect(check.errors(query).first).to include("space")
     end
 
+    it "rejects words containing Unicode whitespace (e.g. NBSP)" do
+      check = described_class.new
+      query = word("foo bar")
+
+      expect(check.call(query)).to be(false)
+      expect(check.errors(query).first).to include("space")
+    end
+
     it "flags invalid characters in a word when zeal is enabled" do
       query = word("foo/bar")
 

@@ -289,6 +289,10 @@ RSpec.describe Luqum::Elasticsearch::Visitor::ElasticsearchQueryBuilder do
         { "match_phrase" => { "foo" => { "query" => "" } } },
       )
 
+      expect(transformer.call(search_field("foo", phrase("\"spam eggs\"")))).to eq(
+        { "match_phrase" => { "foo" => { "query" => "spam eggs" } } },
+      )
+
       custom_transformer = described_class.new(default_field: "custom")
       expect(custom_transformer.call(phrase('"spam eggs"'))).to eq(
         { "match_phrase" => { "custom" => { "query" => "spam eggs" } } },
